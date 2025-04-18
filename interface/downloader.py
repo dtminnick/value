@@ -97,7 +97,7 @@ class Downloader:
 
                 writer.writerows(query_result)
 
-                self.msg_handler.show_info("Result Saved", f"Result saved to: \n\n {file_path}")
+                self.msg_handler.show_info("Result Saved", f"Result saved to the following location: \n\n {file_path}")
 
         except Exception as e:
 
