@@ -34,8 +34,10 @@ class Messenger:
         self.debug = debug
 
         if log_file:
+
             # Set up logging to a file, if specified
-            logging.basicConfig(filename=log_file, level=logging.DEBUG)
+
+            logging.basicConfig(filename = log_file, level = logging.DEBUG)
 
     def show_error(self, title, message):
 
@@ -54,6 +56,7 @@ class Messenger:
         mb.showerror(title, message)
 
         if self.debug:
+
             print(f"[Error] {title}: {message}")
 
         logging.error(f"{title}: {message}")
@@ -75,6 +78,7 @@ class Messenger:
         mb.showwarning(title, message)
 
         if self.debug:
+
             print(f"[Warning] {title}: {message}")
 
         logging.warning(f"{title}: {message}")
@@ -93,9 +97,11 @@ class Messenger:
             The informational message to display.
 
         """
+
         mb.showinfo(title, message)
 
         if self.debug:
+
             print(f"[Info] {title}: {message}")
 
         logging.info(f"{title}: {message}")
@@ -119,6 +125,7 @@ class Messenger:
             True if the user clicks 'Yes', False otherwise.
 
         """
+
         return mb.askyesno(title, message)
 
     def log_debug(self, message):
@@ -132,7 +139,9 @@ class Messenger:
             The debug message to log.
             
         """
+
         if self.debug:
+            
             print(f"[Debug] {message}")
 
         logging.debug(message)
