@@ -1,6 +1,11 @@
 
 from messenger import Messenger
 
+    """
+    A utility code for testing and displaying Messenger class message boxes.
+
+    """
+
 msg_handler = Messenger()
 
 msg_handler.show_error("Test Show Error", "This is an error message.")
