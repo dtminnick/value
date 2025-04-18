@@ -63,7 +63,9 @@ class Downloader:
         """
 
         if not query_result:
+
             self.msg_handler.show_warning("Error", "No query result to download.")
+
             return
         
         title = query_title.strip().replace(" ", "_")
@@ -74,21 +76,30 @@ class Downloader:
 
         file_path = filedialog.asksaveasfilename(
             defaultextension = ".csv",
-            filetypes=[("CSV files", "*.csv")],
+            filetypes = [("CSV files", "*.csv")],
             initialfile = default_file_name,
-            title = "Save query result as..."
+            title = "Save Query Result as..."
         )
 
         if not file_path:
-            self.msg_handler.show_warning("Error", "No file path specified for download.")
+
+            self.msg_handler.show_warning("Download Error", "No file path specified for download.")
+
             return
         
         try:
+
             with open(file_path, "w", newline = "", encoding = "utf-8") as csv_file:
+
                 writer = csv.DictWriter(csv_file, fieldnames = query_result[0].keys())
+
                 writer.writeheader()
+
                 writer.writerows(query_result)
-                self.msg_handler.show_info("Result Saved", f"Result saved to: \n {file_path}")
+
+                self.msg_handler.show_info("Result Saved", f"Result saved to: \n\n {file_path}")
+
         except Exception as e:
-            self.msg_handler.show_error("Error", f"Error saving file: \n {e}")
+
+            self.msg_handler.show_error("Download Error", f"Error saving file: \n\n {e}")
             
