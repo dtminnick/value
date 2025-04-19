@@ -273,27 +273,47 @@ class App:
 
         button_frame.pack(fill = "x", padx = 20, pady = 20)
 
-        ttk.Button(button_frame, 
-                   text = "Add", 
-                   command = lambda t = table_name: self.add_record(t)).grid(row = 0, column = 0, padx = 10)
+        add_btn = ttk.Button(button_frame, 
+                   text = "Add Record", 
+                   command = lambda t = table_name: self.add_record(t))
         
-        ttk.Button(button_frame, 
-                   text = "Update", 
-                command = lambda t = table_name: self.update_record(t)).grid(row = 0, column = 1, padx = 10)
+        add_btn.grid(row = 0, column = 0, padx = 10)
+
+        update_btn = ttk.Button(button_frame, 
+                   text = "Update Record", 
+                command = lambda t = table_name: self.update_record(t))
         
-        ttk.Button(button_frame, 
-                   text = "Delete", 
-                   command = lambda t = table_name: self.delete_record(t)).grid(row = 0, column = 2, padx = 10)
+        update_btn.grid(row = 0, column = 1, padx = 10)
+
+        delete_btn = ttk.Button(button_frame, 
+                   text = "Delete Record", 
+                   command = lambda t = table_name: self.delete_record(t))
         
-        ttk.Button(button_frame, 
-                   text = "Refresh", 
-                   command = lambda t = table_name: self.refresh_records(t)).grid(row = 0, column = 3, padx = 10)
+        delete_btn.grid(row = 0, column = 2, padx = 10)
+
+        refresh_btn = ttk.Button(button_frame, 
+                   text = "Refresh Records", 
+                   command = lambda t = table_name: self.refresh_records(t))
         
+        refresh_btn.grid(row = 0, column = 3, padx = 10)
+
+        # Add tooltips.
+
+        Tooltip(add_btn, widget_id = "add_btn")
+
+        Tooltip(update_btn, widget_id = "update_btn")
+
+        Tooltip(delete_btn, widget_id = "delete_btn")
+        
+        Tooltip(refresh_btn, widget_id = "refresh_btn")
+
         # Add data display to see the data in tables.
 
         tree_frame = ttk.Frame(frame)
 
         tree_frame.pack(fill = "both", expand = True, padx = 20, pady = 20)
+
+        Tooltip(tree_frame, widget_id = "tree_frame")
 
         scrollbar = ttk.Scrollbar(tree_frame, orient = "vertical")
 
