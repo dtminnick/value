@@ -1,7 +1,7 @@
 
 import tkinter as tk
 from messenger import Messenger
-from value_db import Database
+from database import Database
 
 class Tooltip:
 

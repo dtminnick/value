@@ -4,8 +4,10 @@ from messenger import Messenger
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 from tooltip import Tooltip
-from value_db import Database
-from PIL import Image, ImageTk
+from database import Database
+
+import ttkbootstrap as tb
+from ttkbootstrap.constants import *
 
 db = Database()
 
@@ -53,7 +55,7 @@ class App:
 
         self.root.title("Value Measurement Database Application")
 
-        self.root.geometry("1200x700")
+        # self.root.geometry("1200x700")
 
         # Create notebook for tabbed UI.
 
@@ -61,11 +63,13 @@ class App:
 
         self.notebook.pack(expand = True, fill = "both")
 
-        style = ttk.Style()
+        #style = ttk.Style()
 
-        style.theme_use('default')
+        style = tb.Style() 
 
-        style.configure('TNotebook.tab', width = 18, padding = [5, 5])
+        # style.theme_use('default')
+
+        style.configure('TNotebook.tab', width = 18, padding = [10, 10])
 
         self.tables = ['initiative', 
                        'event',
@@ -100,7 +104,7 @@ class App:
 
         query_selection_frame = ttk.Frame(query_frame)
 
-        query_selection_frame.pack(fill = "x", padx = 10, pady = 5)
+        query_selection_frame.pack(fill = "x", padx = 10, pady = 10)
 
         predefined_queries = db.execute_query("SELECT query_title, query_string FROM user_query ORDER BY query_title;")
 
@@ -142,7 +146,7 @@ class App:
         
         download_btn.grid(row = 0, column = 1, padx = 5)
 
-        query_button_frame.pack(fill = "x", padx = 10, pady = 5)
+        query_button_frame.pack(fill = "x", padx = 10, pady = 10)
 
         # Create query output frame.
 
@@ -150,7 +154,7 @@ class App:
 
         query_output_frame = ttk.Frame(query_frame)
 
-        query_output_frame.pack(fill = "both", expand = True, padx = 10, pady = 5)
+        query_output_frame.pack(fill = "both", expand = True, padx = 10, pady = 10)
 
         self.query_output_table = ttk.Treeview(query_output_frame)
 
@@ -232,10 +236,10 @@ class App:
 
         form_frame = ttk.Frame(frame)
 
-        form_frame.pack(fill = "x", padx = 10, pady = 5)
+        form_frame.pack(fill = "x", padx = 20, pady = 20)
 
         for i, col in enumerate(columns):
-            ttk.Label(form_frame, text = f"{col}:").grid(row = i, column = 0, padx = 5, pady = 2, sticky = "w")
+            ttk.Label(form_frame, text = f"{col}:").grid(row = i, column = 0, padx = 5, pady = 5, sticky = "w")
 
             if table_name == "user_query" and i == len(columns) - 1:
 
@@ -243,13 +247,13 @@ class App:
 
                 entry = tk.Text(form_frame, height = 10, width = 100, wrap = "word", font = ("TkDefaultFont", 10))
 
-                entry.grid(row = i, column = 1, padx = 5, pady = 2, sticky = "w")
+                entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "w")
 
                 # Add vertical scrollbar to Text widget.
 
                 scrollbar = ttk.Scrollbar(form_frame, orient = "vertical", command = entry.yview)
 
-                scrollbar.grid(row = i, column = 2, sticky = "ns", padx = 5, pady = 2)
+                scrollbar.grid(row = i, column = 2, sticky = "ns", padx = 5, pady = 5)
 
                 # Link the Text widget with the scrollbar.
 
@@ -259,7 +263,7 @@ class App:
 
                 entry = ttk.Entry(form_frame, width = 100)
 
-                entry.grid(row = i, column = 1, padx = 5, pady = 2, sticky = "ew")
+                entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "ew")
 
             self.entries[table_name][col] = entry
 
@@ -267,29 +271,29 @@ class App:
 
         button_frame = ttk.Frame(frame)
 
-        button_frame.pack(fill = "x", padx = 10, pady = 5)
+        button_frame.pack(fill = "x", padx = 20, pady = 20)
 
         ttk.Button(button_frame, 
                    text = "Add", 
-                   command = lambda t = table_name: self.add_record(t)).grid(row = 0, column = 0, padx = 5)
+                   command = lambda t = table_name: self.add_record(t)).grid(row = 0, column = 0, padx = 10)
         
         ttk.Button(button_frame, 
                    text = "Update", 
-                command = lambda t = table_name: self.update_record(t)).grid(row = 0, column = 1, padx = 5)
+                command = lambda t = table_name: self.update_record(t)).grid(row = 0, column = 1, padx = 10)
         
         ttk.Button(button_frame, 
                    text = "Delete", 
-                   command = lambda t = table_name: self.delete_record(t)).grid(row = 0, column = 2, padx = 5)
+                   command = lambda t = table_name: self.delete_record(t)).grid(row = 0, column = 2, padx = 10)
         
         ttk.Button(button_frame, 
                    text = "Refresh", 
-                   command = lambda t = table_name: self.refresh_records(t)).grid(row = 0, column = 3, padx = 5)
+                   command = lambda t = table_name: self.refresh_records(t)).grid(row = 0, column = 3, padx = 10)
         
         # Add data display to see the data in tables.
 
         tree_frame = ttk.Frame(frame)
 
-        tree_frame.pack(fill = "both", expand = True, padx = 10, pady = 5)
+        tree_frame.pack(fill = "both", expand = True, padx = 20, pady = 20)
 
         scrollbar = ttk.Scrollbar(tree_frame, orient = "vertical")
 
@@ -683,7 +687,9 @@ class App:
             self.notebook.select(tab_index)
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = tb.Window(themename = "value")
+    # root = tk.Tk()
     app = App(root)
+    root.minsize(1200, 1200)
     root.mainloop()
 
