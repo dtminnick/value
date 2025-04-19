@@ -7,7 +7,6 @@ from tooltip import Tooltip
 from value_db import Database
 from PIL import Image, ImageTk
 
-
 db = Database()
 
 msg_handler = Messenger()

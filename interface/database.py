@@ -114,7 +114,7 @@ class Database:
 
         """
 
-        config_file_path = "G:/My Drive/Personal/IIT/Relation Database Implementation and Applications/Project/Interface2/config.ini"
+        config_file_path = "G:/My Drive/Projects/value/interface/config.ini"
 
         db_config = load_db_config(config_file_path)
 
