@@ -55,7 +55,6 @@ def create_dynamic_form(config_data):
         form_name = row['form_name']
         tab_order = row['tab_order']
         tab_display_name = row['tab_display_name'] or form_name
-        field_width = row['field_width'] or 20
 
         if tab_order not in tab_data:
             tab_data[tab_order] = {'tab_name': tab_display_name, 'fields': []}
@@ -72,6 +71,7 @@ def create_dynamic_form(config_data):
             label.grid(row=idx, column=0, padx=5, pady=5, sticky="w")
 
             widget = None
+            field_width = field['field_width'] or 20
 
             if field['field_type'] == 'text':
                 widget = tk.Entry(frame, width = field_width)
@@ -91,7 +91,11 @@ def create_dynamic_form(config_data):
                 widget = tk.Checkbutton(frame, variable=var, width = field_width)
 
             elif field['field_type'] == 'date':
-                widget = DateEntry(frame, width=field_width, background='darkblue', foreground='white', borderwidth=2, )
+                widget = DateEntry(frame, 
+                                   width=field_width, 
+                                   background='darkblue', 
+                                   foreground='white', 
+                                   borderwidth=2)
 
             if widget:
                 widget.grid(row=idx, column=1, padx=5, pady=5, sticky="w")
