@@ -67,16 +67,16 @@ def create_dynamic_form(config_data):
         notebook.add(frame, text=tab_name)
 
         for idx, field in enumerate(sorted(tab['fields'], key=lambda x: x['field_order'])):
-            label = tk.Label(frame, text=field['label_text'])
+            label = tk.Label(frame, text=field['widget_text'])
             label.grid(row=idx, column=0, padx=5, pady=5, sticky="w")
 
             widget = None
             field_width = field['field_width'] or 20
 
-            if field['field_type'] == 'text':
+            if field['widget_type'] == 'text':
                 widget = tk.Entry(frame, width = field_width)
 
-            elif field['field_type'] == 'combobox' and field['lookup_table']:
+            elif field['widget_type'] == 'combobox' and field['lookup_table']:
                 options = fetch_lookup_data(
                     field['lookup_table'],
                     field['lookup_id_col'],
@@ -86,11 +86,11 @@ def create_dynamic_form(config_data):
                 if options:
                     widget.current(0)
 
-            elif field['field_type'] == 'checkbox':
+            elif field['widget_type'] == 'checkbox':
                 var = tk.BooleanVar()
                 widget = tk.Checkbutton(frame, variable=var, width = field_width)
 
-            elif field['field_type'] == 'date':
+            elif field['widget_type'] == 'date':
                 widget = DateEntry(frame, 
                                    width=field_width, 
                                    background='darkblue', 
