@@ -1159,6 +1159,19 @@ class App:
 
         uq_set_membership_check.grid(row = 6, column = 1, padx = 5, pady = 2, sticky = "w")
 
+        # Set comparison.
+
+        uq_set_comparison_var = tk.BooleanVar()
+
+        uq_set_comparison_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Set Comparison:"
+                                    ).grid(row = 7, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_set_comparison_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_comparison_var)
+
+        uq_set_comparison_check.grid(row = 7, column = 1, padx = 5, pady = 2, sticky = "w")
+
         # Subquery.
 
         uq_subquery_var = tk.BooleanVar()
@@ -1166,11 +1179,11 @@ class App:
         uq_subquery_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Subquery:"
-                                    ).grid(row = 7, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 8, column = 0, padx = 5, pady = 2, sticky = "w")
 
         uq_subquery_check = ttk.Checkbutton(uq_entry_frame, variable=uq_subquery_var)
 
-        uq_subquery_check.grid(row = 7, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_subquery_check.grid(row = 8, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # CTE.
 
@@ -1179,11 +1192,11 @@ class App:
         uq_cte_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "CTE:"
-                                    ).grid(row = 8, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 9, column = 0, padx = 5, pady = 2, sticky = "w")
 
         uq_cte_check = ttk.Checkbutton(uq_entry_frame, variable=uq_cte_var)
 
-        uq_cte_check.grid(row = 8, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_cte_check.grid(row = 9, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Aggregate function.
 
@@ -1192,11 +1205,11 @@ class App:
         uq_aggregate_function_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Aggregate Function:"
-                                    ).grid(row = 9, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 10, column = 0, padx = 5, pady = 2, sticky = "w")
 
         uq_aggregate_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_aggregate_function_var)
 
-        uq_aggregate_function_check.grid(row = 9, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_aggregate_function_check.grid(row = 10, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # OLAP.
 
@@ -1205,11 +1218,11 @@ class App:
         uq_olap_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "OLAP:"
-                                    ).grid(row = 10, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 11, column = 0, padx = 5, pady = 2, sticky = "w")
 
         uq_olap_check = ttk.Checkbutton(uq_entry_frame, variable=uq_olap_var)
 
-        uq_olap_check.grid(row = 10, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_olap_check.grid(row = 11, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
@@ -1251,6 +1264,7 @@ class App:
             "query_string",
             "set_operation",
             "set_membership",
+            "set_comparison",
             "subquery",
             "cte",
             "aggregate_function",
@@ -1299,6 +1313,7 @@ class App:
             "query_string": uq_query_string_entry,
             "set_operation": uq_set_operation_check,
             "set_membership": uq_set_membership_check,
+            "set_comparison": uq_set_comparison_check,
             "subquery": uq_subquery_check,
             "cte": uq_cte_check,
             "aggregate_function": uq_aggregate_function_check,
