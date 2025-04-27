@@ -7,6 +7,7 @@ from tooltip import Tooltip
 from database import Database
 from tkcalendar import DateEntry
 from widget_binder import WidgetBinder
+import tkinter.font as tkfont
 
 
 # import ttkbootstrap as tb
@@ -1129,7 +1130,18 @@ class App:
                                   text = "Query String:"
                                   ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        uq_query_string_entry = ttk.Entry(uq_entry_frame, width = 100)
+        style = ttk.Style()
+
+        entry_font_name = style.lookup('TEntry', 'font')
+
+        # Fallback if style lookup doesn't return a font name
+        if not entry_font_name:
+            entry_font_name = 'TkDefaultFont'
+
+        # Create a font object using the ttk.Entry font
+        entry_font = tkfont.nametofont(entry_font_name)
+        
+        uq_query_string_entry = tk.Text(uq_entry_frame, height = 10, width = 100, wrap = "word", font = entry_font)
 
         uq_query_string_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
 
@@ -1137,105 +1149,145 @@ class App:
 
         uq_set_operation_var = tk.BooleanVar()
 
+        uq_space1_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 0, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_set_operation_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Set Operation:"
-                                    ).grid(row = 5, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 0, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_set_operation_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_operation_var)
 
-        uq_set_operation_check.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_set_operation_check.grid(row = 0, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # Set membership.
 
         uq_set_membership_var = tk.BooleanVar()
 
+        uq_space2_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 1, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_set_membership_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Set Membership:"
-                                    ).grid(row = 6, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 1, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_set_membership_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_membership_var)
 
-        uq_set_membership_check.grid(row = 6, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_set_membership_check.grid(row = 1, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # Set comparison.
 
         uq_set_comparison_var = tk.BooleanVar()
 
+        uq_space3_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 2, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_set_comparison_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Set Comparison:"
-                                    ).grid(row = 7, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 2, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_set_comparison_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_comparison_var)
 
-        uq_set_comparison_check.grid(row = 7, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_set_comparison_check.grid(row = 2, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # Subquery.
 
         uq_subquery_var = tk.BooleanVar()
 
+        uq_space4_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 3, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_subquery_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Subquery:"
-                                    ).grid(row = 8, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 3, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_subquery_check = ttk.Checkbutton(uq_entry_frame, variable=uq_subquery_var)
 
-        uq_subquery_check.grid(row = 8, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_subquery_check.grid(row = 3, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # CTE.
 
         uq_cte_var = tk.BooleanVar()
 
+        uq_space5_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 4, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_cte_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "CTE:"
-                                    ).grid(row = 9, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 4, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_cte_check = ttk.Checkbutton(uq_entry_frame, variable=uq_cte_var)
 
-        uq_cte_check.grid(row = 9, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_cte_check.grid(row = 4, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # Aggregate function.
 
         uq_aggregate_function_var = tk.BooleanVar()
 
+        uq_space6_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 5, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_aggregate_function_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Aggregate Function:"
-                                    ).grid(row = 10, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 5, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_aggregate_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_aggregate_function_var)
 
-        uq_aggregate_function_check.grid(row = 10, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_aggregate_function_check.grid(row = 5, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # window function.
 
         uq_window_function_var = tk.BooleanVar()
 
+        uq_space7_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 6, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_window_function_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "Window Function:"
-                                    ).grid(row = 11, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 6, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_window_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_window_function_var)
 
-        uq_window_function_check.grid(row = 11, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_window_function_check.grid(row = 6, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # OLAP.
 
         uq_olap_var = tk.BooleanVar()
 
+        uq_space8_label = ttk.Label(uq_entry_frame,
+                                    width = 10,
+                                    text = ""
+                                    ).grid(row = 7, column = 3, padx = 5, pady = 2, sticky = "w")
+
         uq_olap_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "OLAP:"
-                                    ).grid(row = 12, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 7, column = 4, padx = 5, pady = 2, sticky = "w")
 
         uq_olap_check = ttk.Checkbutton(uq_entry_frame, variable=uq_olap_var)
 
-        uq_olap_check.grid(row = 12, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_olap_check.grid(row = 7, column = 5, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
