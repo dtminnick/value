@@ -711,25 +711,25 @@ class App:
         ep_button_frame = ttk.Frame(ep_frame)
 
         ep_add_btn = ttk.Button(ep_button_frame,
-                                        command = lambda: self.add_record("plan"),
+                                        command = lambda: self.add_record("event_plan"),
                                         text = "Add")
         
         ep_add_btn.grid(row = 0, column = 0, padx = 5)
 
         ep_update_btn = ttk.Button(ep_button_frame,
-                                           command = lambda: self.update_record("plan"),
+                                           command = lambda: self.update_record("event_plan"),
                                            text = "Update")
         
         ep_update_btn.grid(row = 0, column = 1, padx = 5)
 
         ep_delete_btn = ttk.Button(ep_button_frame,
-                                           command = lambda: self.delete_record("plan"),
+                                           command = lambda: self.delete_record("event_plan"),
                                            text = "Delete")
         
         ep_delete_btn.grid(row = 0, column = 2, padx = 5)
 
         ep_refresh_btn= ttk.Button(ep_button_frame,
-                                           command = lambda: self.refresh_records("plan"),
+                                           command = lambda: self.refresh_records("event_plan"),
                                            text = "Refresh")
         
         ep_refresh_btn.grid(row = 0, column = 3, padx = 5)
@@ -739,8 +739,8 @@ class App:
         # Create treeview frame.
 
         columns = (
-            "plan_id",
-            "event_id"
+            "event_id",
+            "plan_id"
         )
 
         ep_tree_frame = ttk.Frame(ep_frame)
@@ -1449,7 +1449,9 @@ class App:
 
         self.query_output_table.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "nsew")
 
-        # self.query_output_table.pack(fill = "both", expand = True)
+        query_output_frame.grid_rowconfigure(1, weight=1)
+        
+        query_output_frame.grid_columnconfigure(0, weight=1)
 
         query_frame.pack()
 
