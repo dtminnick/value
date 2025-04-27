@@ -1076,56 +1076,70 @@ class App:
         # Create data entry frame and widgets.
 
         uq_entry_frame = ttk.Frame(uq_frame)
+        
+        uq_entry_frame.pack(fill="x", padx=10, pady=10)
 
-        uq_entry_frame.pack(fill = "x", padx = 10, pady = 10)
+        # Create left and right frames inside uq_entry_frame.
+
+        uq_left_frame = ttk.Frame(uq_entry_frame)
+
+        uq_left_frame.pack(side="left", fill="y")   # Only fill vertically, NOT horizontally
+
+        uq_right_frame = ttk.Frame(uq_entry_frame)
+
+        uq_right_frame.pack(side="left", fill="both", expand=True)  # Expand into remaining space
+
+        # uq_entry_frame = ttk.Frame(uq_frame)
+
+        # uq_entry_frame.pack(fill = "x", padx = 10, pady = 10)
         
         # Query id.
 
-        uq_query_id_label = ttk.Label(uq_entry_frame,
+        uq_query_id_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query Id:"
                                   ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        uq_query_id_entry = ttk.Entry(uq_entry_frame, width = 20)
+        uq_query_id_entry = ttk.Entry(uq_left_frame, width = 20)
 
         uq_query_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Query title.
 
-        uq_query_title_label = ttk.Label(uq_entry_frame,
+        uq_query_title_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query Title:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        uq_query_title_entry = ttk.Entry(uq_entry_frame, width = 100)
+        uq_query_title_entry = ttk.Entry(uq_left_frame, width = 100)
 
         uq_query_title_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Query description.
 
-        uq_query_description_label = ttk.Label(uq_entry_frame,
+        uq_query_description_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query Description:"
                                   ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        uq_query_description_entry = ttk.Entry(uq_entry_frame, width = 100)
+        uq_query_description_entry = ttk.Entry(uq_left_frame, width = 100)
 
         uq_query_description_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Query purpose.
 
-        uq_query_purpose_label = ttk.Label(uq_entry_frame,
+        uq_query_purpose_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query Purpose:"
                                   ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        uq_query_purpose_entry = ttk.Entry(uq_entry_frame, width = 100)
+        uq_query_purpose_entry = ttk.Entry(uq_left_frame, width = 100)
 
         uq_query_purpose_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Query string.
 
-        uq_query_string_label = ttk.Label(uq_entry_frame,
+        uq_query_string_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query String:"
                                   ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
@@ -1141,153 +1155,123 @@ class App:
         # Create a font object using the ttk.Entry font
         entry_font = tkfont.nametofont(entry_font_name)
         
-        uq_query_string_entry = tk.Text(uq_entry_frame, height = 10, width = 100, wrap = "word", font = entry_font)
+        uq_query_string_entry = tk.Text(uq_left_frame, height = 10, width = 100, wrap = "word", font = entry_font)
 
         uq_query_string_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Checkbox frame.
+
+        uq_checkbox_frame = ttk.Frame(uq_right_frame)
+        
+        # uq_checkbox_frame.grid(row=0, column=0, pady=10, padx=10, sticky = "nsew")
+
+        uq_checkbox_frame.pack(anchor="center")
+
+        # uq_right_frame.grid_columnconfigure(0, weight=1)
 
         # Set operation.
 
         uq_set_operation_var = tk.BooleanVar()
 
-        uq_space1_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 0, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_set_operation_label = ttk.Label(uq_entry_frame,
+        uq_set_operation_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Set Operation:"
-                                    ).grid(row = 0, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_set_operation_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_operation_var)
+        uq_set_operation_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_set_operation_var)
 
-        uq_set_operation_check.grid(row = 0, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_set_operation_check.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Set membership.
 
         uq_set_membership_var = tk.BooleanVar()
 
-        uq_space2_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 1, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_set_membership_label = ttk.Label(uq_entry_frame,
+        uq_set_membership_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Set Membership:"
-                                    ).grid(row = 1, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_set_membership_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_membership_var)
+        uq_set_membership_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_set_membership_var)
 
-        uq_set_membership_check.grid(row = 1, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_set_membership_check.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Set comparison.
 
         uq_set_comparison_var = tk.BooleanVar()
 
-        uq_space3_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 2, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_set_comparison_label = ttk.Label(uq_entry_frame,
+        uq_set_comparison_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Set Comparison:"
-                                    ).grid(row = 2, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_set_comparison_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_comparison_var)
+        uq_set_comparison_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_set_comparison_var)
 
-        uq_set_comparison_check.grid(row = 2, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_set_comparison_check.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Subquery.
 
         uq_subquery_var = tk.BooleanVar()
 
-        uq_space4_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 3, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_subquery_label = ttk.Label(uq_entry_frame,
+        uq_subquery_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Subquery:"
-                                    ).grid(row = 3, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_subquery_check = ttk.Checkbutton(uq_entry_frame, variable=uq_subquery_var)
+        uq_subquery_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_subquery_var)
 
-        uq_subquery_check.grid(row = 3, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_subquery_check.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # CTE.
 
         uq_cte_var = tk.BooleanVar()
 
-        uq_space5_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 4, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_cte_label = ttk.Label(uq_entry_frame,
+        uq_cte_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "CTE:"
-                                    ).grid(row = 4, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_cte_check = ttk.Checkbutton(uq_entry_frame, variable=uq_cte_var)
+        uq_cte_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_cte_var)
 
-        uq_cte_check.grid(row = 4, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_cte_check.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Aggregate function.
 
         uq_aggregate_function_var = tk.BooleanVar()
 
-        uq_space6_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 5, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_aggregate_function_label = ttk.Label(uq_entry_frame,
+        uq_aggregate_function_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Aggregate Function:"
-                                    ).grid(row = 5, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 5, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_aggregate_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_aggregate_function_var)
+        uq_aggregate_function_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_aggregate_function_var)
 
-        uq_aggregate_function_check.grid(row = 5, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_aggregate_function_check.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # window function.
 
         uq_window_function_var = tk.BooleanVar()
 
-        uq_space7_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 6, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_window_function_label = ttk.Label(uq_entry_frame,
+        uq_window_function_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "Window Function:"
-                                    ).grid(row = 6, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 6, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_window_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_window_function_var)
+        uq_window_function_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_window_function_var)
 
-        uq_window_function_check.grid(row = 6, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_window_function_check.grid(row = 6, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # OLAP.
 
         uq_olap_var = tk.BooleanVar()
 
-        uq_space8_label = ttk.Label(uq_entry_frame,
-                                    width = 10,
-                                    text = ""
-                                    ).grid(row = 7, column = 3, padx = 5, pady = 2, sticky = "w")
-
-        uq_olap_label = ttk.Label(uq_entry_frame,
+        uq_olap_label = ttk.Label(uq_checkbox_frame,
                                     width = 20,
                                     text = "OLAP:"
-                                    ).grid(row = 7, column = 4, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 7, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        uq_olap_check = ttk.Checkbutton(uq_entry_frame, variable=uq_olap_var)
+        uq_olap_check = ttk.Checkbutton(uq_checkbox_frame, variable=uq_olap_var)
 
-        uq_olap_check.grid(row = 7, column = 5, padx = 5, pady = 2, sticky = "w")
+        uq_olap_check.grid(row = 7, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
@@ -1450,7 +1434,7 @@ class App:
         self.query_output_table.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "nsew")
 
         query_output_frame.grid_rowconfigure(1, weight=1)
-        
+
         query_output_frame.grid_columnconfigure(0, weight=1)
 
         query_frame.pack()
