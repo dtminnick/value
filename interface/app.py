@@ -1211,6 +1211,19 @@ class App:
 
         uq_aggregate_function_check.grid(row = 10, column = 1, padx = 5, pady = 2, sticky = "w")
 
+        # window function.
+
+        uq_window_function_var = tk.BooleanVar()
+
+        uq_window_function_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Window Function:"
+                                    ).grid(row = 11, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_window_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_window_function_var)
+
+        uq_window_function_check.grid(row = 11, column = 1, padx = 5, pady = 2, sticky = "w")
+
         # OLAP.
 
         uq_olap_var = tk.BooleanVar()
@@ -1218,11 +1231,11 @@ class App:
         uq_olap_label = ttk.Label(uq_entry_frame,
                                     width = 20,
                                     text = "OLAP:"
-                                    ).grid(row = 11, column = 0, padx = 5, pady = 2, sticky = "w")
+                                    ).grid(row = 12, column = 0, padx = 5, pady = 2, sticky = "w")
 
         uq_olap_check = ttk.Checkbutton(uq_entry_frame, variable=uq_olap_var)
 
-        uq_olap_check.grid(row = 11, column = 1, padx = 5, pady = 2, sticky = "w")
+        uq_olap_check.grid(row = 12, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
@@ -1268,6 +1281,7 @@ class App:
             "subquery",
             "cte",
             "aggregate_function",
+            "window_function",
             "olap"
         )
 
@@ -1317,6 +1331,7 @@ class App:
             "subquery": uq_subquery_check,
             "cte": uq_cte_check,
             "aggregate_function": uq_aggregate_function_check,
+            "window_function": uq_window_function_check,
             "olap": uq_olap_check
         }
 
