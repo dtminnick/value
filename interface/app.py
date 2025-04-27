@@ -422,9 +422,9 @@ class App:
                                   text = "Initiative Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        self.evnt_initiative_id_entry = ttk.Entry(evnt_entry_frame)
+        evnt_initiative_id_entry = ttk.Entry(evnt_entry_frame)
 
-        self.evnt_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        evnt_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event title.
 
@@ -433,9 +433,9 @@ class App:
                                   text = "Event Title:"
                                   ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        self.evnt_event_title_entry = ttk.Entry(evnt_entry_frame)
+        evnt_event_title_entry = ttk.Entry(evnt_entry_frame)
 
-        self.evnt_event_title_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
+        evnt_event_title_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event description.
 
@@ -444,17 +444,17 @@ class App:
                                   text = "Description:"
                                   ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        self.evnt_event_description_entry = ttk.Entry(evnt_entry_frame)
+        evnt_event_description_entry = ttk.Entry(evnt_entry_frame)
 
-        self.evnt_event_description_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
+        evnt_event_description_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event date.
 
         evnt_event_date_label = ttk.Label(evnt_entry_frame, width = 20, text = "Event Date:").grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        init_event_date_entry = DateEntry(evnt_entry_frame, width = 20, date_pattern = "yyyy-mm-dd")
+        evnt_event_date_entry = DateEntry(evnt_entry_frame, width = 20, date_pattern = "yyyy-mm-dd")
         
-        init_event_date_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
+        evnt_event_date_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Activation id.
 
@@ -463,9 +463,9 @@ class App:
                                   text = "Activation Id:"
                                   ).grid(row = 5, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        self.evnt_activation_id_entry = ttk.Entry(evnt_entry_frame)
+        evnt_activation_id_entry = ttk.Entry(evnt_entry_frame)
 
-        self.evnt_activation_id_entry.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
+        evnt_activation_id_entry.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Bind entry frame.
 
@@ -545,6 +545,19 @@ class App:
         self.notebook.add(evnt_frame, text = "Events")
 
         self.frames["Events"] = evnt_frame
+
+        # Create event entries.
+
+        self.entries["event"] = {
+            "event_id": evnt_event_id_entry,
+            "initiative_id": evnt_initiative_id_entry,
+            "event_title": evnt_event_title_entry,
+            "event_description": evnt_event_description_entry,
+            "event_date": evnt_event_date_entry,
+            "activation_id": evnt_activation_id_entry
+        }
+
+        self.refresh_records("event") 
 
         # -----------------
         # Create Plan Frame
@@ -649,6 +662,15 @@ class App:
 
         self.frames["Plans"] = plan_frame
 
+        # Create plan entries.
+
+        self.entries["plan"] = {
+            "plan_id": plan_plan_id_entry,
+            "plan_name": plan_plan_name_entry
+        }
+
+        self.refresh_records("plan") 
+
         # -------------------------
         # Create Events Plans Frame
         # -------------------------
@@ -748,21 +770,546 @@ class App:
 
         self.trees["event_plan"] = self.ep_output_table
 
-        self.notebook.add(plan_frame, text = "Events Plans")
+        self.notebook.add(ep_frame, text = "Events Plans")
 
-        self.frames["Events Plans"] = plan_frame
+        self.frames["Events Plans"] = ep_frame
 
+        # Create event plan entries.
 
+        self.entries["event_plan"] = {
+            "event_id": ep_event_id_entry,
+            "plan_id": ep_plan_id_entry
+        }
 
+        self.refresh_records("event_plan") 
 
+        # --------------------------------
+        # Create Global Metric Value Frame
+        # --------------------------------
 
+        gmv_frame = ttk.Frame(self.notebook)
 
+        # Create data entry frame and widgets.
 
+        gmv_entry_frame = ttk.Frame(gmv_frame)
 
+        gmv_entry_frame.pack(fill = "x", padx = 10, pady = 10)
 
+        # Global value id.
 
+        gmv_global_value_id_label = ttk.Label(gmv_entry_frame,
+                                  width = 20,
+                                  text = "Value Id:"
+                                  ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        gmv_global_value_id_entry = ttk.Entry(gmv_entry_frame, width = 20)
 
-        # Create queries tab for predefined and custom queries.
+        gmv_global_value_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Metric id.
+
+        gmv_metric_id_label = ttk.Label(gmv_entry_frame,
+                                  width = 20,
+                                  text = "Metric Id:"
+                                  ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        gmv_metric_id_entry = ttk.Entry(gmv_entry_frame, width = 20)
+
+        gmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Metric date.
+
+        gmv_metric_date_label = ttk.Label(gmv_entry_frame, width = 20, text = "Metric Date:").grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        gmv_metric_date_entry = DateEntry(gmv_entry_frame, width = 20, date_pattern = "yyyy-mm-dd")
+        
+        gmv_metric_date_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Actual value.
+
+        gmv_actual_value_label = ttk.Label(gmv_entry_frame,
+                                  width = 20,
+                                  text = "Actual Value:"
+                                  ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        gmv_actual_value_entry = ttk.Entry(gmv_entry_frame, width = 20)
+
+        gmv_actual_value_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Create button frame and widgets.
+
+        gmv_button_frame = ttk.Frame(gmv_frame)
+
+        gmv_add_btn = ttk.Button(gmv_button_frame,
+                                        command = lambda: self.add_record("global_metric_value"),
+                                        text = "Add")
+        
+        gmv_add_btn.grid(row = 0, column = 0, padx = 5)
+
+        gmv_update_btn = ttk.Button(gmv_button_frame,
+                                           command = lambda: self.update_record("global_metric_value"),
+                                           text = "Update")
+        
+        gmv_update_btn.grid(row = 0, column = 1, padx = 5)
+
+        gmv_delete_btn = ttk.Button(gmv_button_frame,
+                                           command = lambda: self.delete_record("global_metric_value"),
+                                           text = "Delete")
+        
+        gmv_delete_btn.grid(row = 0, column = 2, padx = 5)
+
+        gmv_refresh_btn= ttk.Button(gmv_button_frame,
+                                           command = lambda: self.refresh_records("global_metric_value"),
+                                           text = "Refresh")
+        
+        gmv_refresh_btn.grid(row = 0, column = 3, padx = 5)
+
+        gmv_button_frame.pack(fill = "x", padx = 10, pady = 10)
+
+        # Create treeview frame.
+
+        columns = (
+            "global_value_id",
+            "metric_id",
+            "metric_date",
+            "actual_value"
+        )
+
+        gmv_tree_frame = ttk.Frame(gmv_frame)
+
+        gmv_tree_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        gmv_tree_frame.rowconfigure(1, weight=1)
+
+        gmv_tree_frame.columnconfigure(0, weight=1)
+
+        gmv_output_label = ttk.Label(gmv_tree_frame, width = 20, text = "Global Value Records:").grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        self.gmv_output_table = ttk.Treeview(gmv_tree_frame, columns = columns, show = "headings")
+
+        for col in columns:
+            self.gmv_output_table.heading(col, text=col.replace("_", " ").title())
+            self.gmv_output_table.column(col, width=100)
+
+        self.gmv_output_table.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "nsew")
+
+        gmv_table_sbar = ttk.Scrollbar(gmv_tree_frame, orient="vertical", command=self.gmv_output_table.yview)
+
+        self.gmv_output_table.configure(yscrollcommand=gmv_table_sbar.set)
+
+        gmv_table_sbar.grid(row=1, column=1, sticky="ns")
+
+        self.gmv_output_table.bind("<<TreeviewSelect>>", lambda e: self.select_record("global_metric_value"))
+
+        self.trees["global_metric_value"] = self.gmv_output_table
+
+        self.notebook.add(gmv_frame, text = "Global Metric Values")
+
+        self.frames["Global Metric Values"] = gmv_frame
+
+        # Create global metric value entries.
+
+        self.entries["global_metric_value"] = {
+            "global_value_id": gmv_global_value_id_entry,
+            "metric_id": gmv_metric_id_entry,
+            "metric_date": gmv_metric_date_entry,
+            "actual_value": gmv_actual_value_entry
+        }
+
+        self.refresh_records("global_metric_value") 
+
+        # ------------------------------
+        # Create Plan Metric Value Frame
+        # ------------------------------
+
+        pmv_frame = ttk.Frame(self.notebook)
+
+        # Create data entry frame and widgets.
+
+        pmv_entry_frame = ttk.Frame(pmv_frame)
+
+        pmv_entry_frame.pack(fill = "x", padx = 10, pady = 10)
+
+        # Plan value id.
+
+        pmv_global_value_id_label = ttk.Label(pmv_entry_frame,
+                                  width = 20,
+                                  text = "Value Id:"
+                                  ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        pmv_global_value_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
+
+        pmv_global_value_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Metric id.
+
+        pmv_metric_id_label = ttk.Label(pmv_entry_frame,
+                                  width = 20,
+                                  text = "Metric Id:"
+                                  ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        pmv_metric_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
+
+        pmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Plan id.
+
+        pmv_plan_id_label = ttk.Label(pmv_entry_frame,
+                                  width = 20,
+                                  text = "Plan Id:"
+                                  ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        pmv_plan_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
+
+        pmv_plan_id_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Metric date.
+
+        pmv_metric_date_label = ttk.Label(pmv_entry_frame, width = 20, text = "Metric Date:").grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        pmv_metric_date_entry = DateEntry(pmv_entry_frame, width = 20, date_pattern = "yyyy-mm-dd")
+        
+        pmv_metric_date_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Actual value.
+
+        pmv_actual_value_label = ttk.Label(pmv_entry_frame,
+                                  width = 20,
+                                  text = "Actual Value:"
+                                  ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        pmv_actual_value_entry = ttk.Entry(pmv_entry_frame, width = 20)
+
+        pmv_actual_value_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Create button frame and widgets.
+
+        pmv_button_frame = ttk.Frame(pmv_frame)
+
+        pmv_add_btn = ttk.Button(pmv_button_frame,
+                                        command = lambda: self.add_record("plan_metric_value"),
+                                        text = "Add")
+        
+        pmv_add_btn.grid(row = 0, column = 0, padx = 5)
+
+        pmv_update_btn = ttk.Button(pmv_button_frame,
+                                           command = lambda: self.update_record("plan_metric_value"),
+                                           text = "Update")
+        
+        pmv_update_btn.grid(row = 0, column = 1, padx = 5)
+
+        pmv_delete_btn = ttk.Button(pmv_button_frame,
+                                           command = lambda: self.delete_record("plan_metric_value"),
+                                           text = "Delete")
+        
+        pmv_delete_btn.grid(row = 0, column = 2, padx = 5)
+
+        pmv_refresh_btn= ttk.Button(pmv_button_frame,
+                                           command = lambda: self.refresh_records("plan_metric_value"),
+                                           text = "Refresh")
+        
+        pmv_refresh_btn.grid(row = 0, column = 3, padx = 5)
+
+        pmv_button_frame.pack(fill = "x", padx = 10, pady = 10)
+
+        # Create treeview frame.
+
+        columns = (
+            "plan_value_id",
+            "metric_id",
+            "plan_id",
+            "metric_date",
+            "actual_value"
+        )
+
+        pmv_tree_frame = ttk.Frame(pmv_frame)
+
+        pmv_tree_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        pmv_tree_frame.rowconfigure(1, weight=1)
+
+        pmv_tree_frame.columnconfigure(0, weight=1)
+
+        pmv_output_label = ttk.Label(pmv_tree_frame, width = 20, text = "Plan Value Records:").grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        self.pmv_output_table = ttk.Treeview(pmv_tree_frame, columns = columns, show = "headings")
+
+        for col in columns:
+            self.pmv_output_table.heading(col, text=col.replace("_", " ").title())
+            self.pmv_output_table.column(col, width=100)
+
+        self.pmv_output_table.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "nsew")
+
+        pmv_table_sbar = ttk.Scrollbar(pmv_tree_frame, orient="vertical", command=self.pmv_output_table.yview)
+
+        self.pmv_output_table.configure(yscrollcommand=pmv_table_sbar.set)
+
+        pmv_table_sbar.grid(row=1, column=1, sticky="ns")
+
+        self.pmv_output_table.bind("<<TreeviewSelect>>", lambda e: self.select_record("plan_metric_value"))
+
+        self.trees["plan_metric_value"] = self.pmv_output_table
+
+        self.notebook.add(pmv_frame, text = "Plan Metric Values")
+
+        self.frames["Plan Metric Values"] = pmv_frame
+
+        # Create plan metric value entries.
+
+        self.entries["plan_metric_value"] = {
+            "plan_value_id": pmv_global_value_id_entry,
+            "metric_id": pmv_metric_id_entry,
+            "plan_id": pmv_plan_id_entry,
+            "metric_date": pmv_metric_date_entry,
+            "actual_value": pmv_actual_value_entry
+        }
+
+        self.refresh_records("plan_metric_value") 
+
+        # -----------------------
+        # Create User Query Frame
+        # -----------------------
+
+        uq_frame = ttk.Frame(self.notebook)
+
+        # Create data entry frame and widgets.
+
+        uq_entry_frame = ttk.Frame(uq_frame)
+
+        uq_entry_frame.pack(fill = "x", padx = 10, pady = 10)
+        
+        # Query id.
+
+        uq_query_id_label = ttk.Label(uq_entry_frame,
+                                  width = 20,
+                                  text = "Query Id:"
+                                  ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        uq_query_id_entry = ttk.Entry(uq_entry_frame, width = 20)
+
+        uq_query_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Query title.
+
+        uq_query_title_label = ttk.Label(uq_entry_frame,
+                                  width = 20,
+                                  text = "Query Title:"
+                                  ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        uq_query_title_entry = ttk.Entry(uq_entry_frame, width = 100)
+
+        uq_query_title_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Query description.
+
+        uq_query_description_label = ttk.Label(uq_entry_frame,
+                                  width = 20,
+                                  text = "Query Description:"
+                                  ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        uq_query_description_entry = ttk.Entry(uq_entry_frame, width = 100)
+
+        uq_query_description_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Query purpose.
+
+        uq_query_purpose_label = ttk.Label(uq_entry_frame,
+                                  width = 20,
+                                  text = "Query Purpose:"
+                                  ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        uq_query_purpose_entry = ttk.Entry(uq_entry_frame, width = 100)
+
+        uq_query_purpose_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Query string.
+
+        uq_query_string_label = ttk.Label(uq_entry_frame,
+                                  width = 20,
+                                  text = "Query String:"
+                                  ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
+        
+        uq_query_string_entry = ttk.Entry(uq_entry_frame, width = 100)
+
+        uq_query_string_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Set operation.
+
+        uq_set_operation_var = tk.BooleanVar()
+
+        uq_set_operation_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Set Operation:"
+                                    ).grid(row = 5, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_set_operation_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_operation_var)
+
+        uq_set_operation_check.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Set membership.
+
+        uq_set_membership_var = tk.BooleanVar()
+
+        uq_set_membership_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Set Membership:"
+                                    ).grid(row = 6, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_set_membership_check = ttk.Checkbutton(uq_entry_frame, variable=uq_set_membership_var)
+
+        uq_set_membership_check.grid(row = 6, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Subquery.
+
+        uq_subquery_var = tk.BooleanVar()
+
+        uq_subquery_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Subquery:"
+                                    ).grid(row = 7, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_subquery_check = ttk.Checkbutton(uq_entry_frame, variable=uq_subquery_var)
+
+        uq_subquery_check.grid(row = 7, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # CTE.
+
+        uq_cte_var = tk.BooleanVar()
+
+        uq_cte_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "CTE:"
+                                    ).grid(row = 8, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_cte_check = ttk.Checkbutton(uq_entry_frame, variable=uq_cte_var)
+
+        uq_cte_check.grid(row = 8, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Aggregate function.
+
+        uq_aggregate_function_var = tk.BooleanVar()
+
+        uq_aggregate_function_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "Aggregate Function:"
+                                    ).grid(row = 9, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_aggregate_function_check = ttk.Checkbutton(uq_entry_frame, variable=uq_aggregate_function_var)
+
+        uq_aggregate_function_check.grid(row = 9, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # OLAP.
+
+        uq_olap_var = tk.BooleanVar()
+
+        uq_olap_label = ttk.Label(uq_entry_frame,
+                                    width = 20,
+                                    text = "OLAP:"
+                                    ).grid(row = 10, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        uq_olap_check = ttk.Checkbutton(uq_entry_frame, variable=uq_olap_var)
+
+        uq_olap_check.grid(row = 10, column = 1, padx = 5, pady = 2, sticky = "w")
+
+        # Create button frame and widgets.
+
+        uq_button_frame = ttk.Frame(uq_frame)
+
+        uq_add_btn = ttk.Button(uq_button_frame,
+                                        command = lambda: self.add_record("user_query"),
+                                        text = "Add")
+        
+        uq_add_btn.grid(row = 0, column = 0, padx = 5)
+
+        uq_update_btn = ttk.Button(uq_button_frame,
+                                           command = lambda: self.update_record("user_query"),
+                                           text = "Update")
+        
+        uq_update_btn.grid(row = 0, column = 1, padx = 5)
+
+        uq_delete_btn = ttk.Button(uq_button_frame,
+                                           command = lambda: self.delete_record("user_query"),
+                                           text = "Delete")
+        
+        uq_delete_btn.grid(row = 0, column = 2, padx = 5)
+
+        uq_refresh_btn= ttk.Button(uq_button_frame,
+                                           command = lambda: self.refresh_records("user_query"),
+                                           text = "Refresh")
+        
+        uq_refresh_btn.grid(row = 0, column = 3, padx = 5)
+
+        uq_button_frame.pack(fill = "x", padx = 10, pady = 10)
+
+        # Create treeview frame.
+
+        columns = (
+            "query_id",
+            "query_title",
+            "query_description",
+            "query_purpose",
+            "query_string",
+            "set_operation",
+            "set_membership",
+            "subquery",
+            "cte",
+            "aggregate_function",
+            "olap"
+        )
+
+        uq_tree_frame = ttk.Frame(uq_frame)
+
+        uq_tree_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        uq_tree_frame.rowconfigure(1, weight=1)
+
+        uq_tree_frame.columnconfigure(0, weight=1)
+
+        uq_output_label = ttk.Label(uq_tree_frame, width = 20, text = "User Query Records:").grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        self.uq_output_table = ttk.Treeview(uq_tree_frame, columns = columns, show = "headings")
+
+        for col in columns:
+            self.uq_output_table.heading(col, text=col.replace("_", " ").title())
+            self.uq_output_table.column(col, width=100)
+
+        self.uq_output_table.grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "nsew")
+
+        uq_table_sbar = ttk.Scrollbar(uq_tree_frame, orient="vertical", command=self.uq_output_table.yview)
+
+        self.uq_output_table.configure(yscrollcommand=uq_table_sbar.set)
+
+        uq_table_sbar.grid(row=1, column=1, sticky="ns")
+
+        self.uq_output_table.bind("<<TreeviewSelect>>", lambda e: self.select_record("user_query"))
+
+        self.trees["user_query"] = self.uq_output_table
+
+        self.notebook.add(uq_frame, text = "User Queries")
+
+        self.frames["User Queries"] = uq_frame
+
+        # Create user query entries.
+
+        self.entries["user_query"] = {
+            "query_id": uq_query_id_entry,
+            "query_title": uq_query_title_entry,
+            "query_description": uq_query_description_entry,
+            "query_purpose": uq_query_purpose_entry,
+            "query_string": uq_query_string_entry,
+            "set_operation": uq_set_operation_check,
+            "set_membership": uq_set_membership_check,
+            "subquery": uq_subquery_check,
+            "cte": uq_cte_check,
+            "aggregate_function": uq_aggregate_function_check,
+            "olap": uq_olap_check
+        }
+
+        self.refresh_records("user_query") 
+
+        # ----------------------
+        # Create Run Query Frame
+        # ----------------------
 
         query_frame = ttk.Frame(self.notebook)
 
