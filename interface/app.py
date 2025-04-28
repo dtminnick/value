@@ -1155,9 +1155,9 @@ class App:
         # Create a font object using the ttk.Entry font
         entry_font = tkfont.nametofont(entry_font_name)
         
-        uq_query_string_entry = tk.Text(uq_left_frame, height = 10, width = 100, wrap = "word", font = entry_font)
+        self.uq_query_string_entry = tk.Text(uq_left_frame, height = 10, width = 100, wrap = "word", font = entry_font)
 
-        uq_query_string_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.uq_query_string_entry.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Checkbox frame.
 
@@ -1278,13 +1278,13 @@ class App:
         uq_button_frame = ttk.Frame(uq_frame)
 
         uq_add_btn = ttk.Button(uq_button_frame,
-                                        command = lambda: self.add_record("user_query"),
+                                        command = lambda: self.validate_and_add("user_query"),
                                         text = "Add")
         
         uq_add_btn.grid(row = 0, column = 0, padx = 5)
 
         uq_update_btn = ttk.Button(uq_button_frame,
-                                           command = lambda: self.update_record("user_query"),
+                                           command = lambda: self.validate_and_update("user_query"),
                                            text = "Update")
         
         uq_update_btn.grid(row = 0, column = 1, padx = 5)
@@ -1360,7 +1360,7 @@ class App:
             "query_title": uq_query_title_entry,
             "query_description": uq_query_description_entry,
             "query_purpose": uq_query_purpose_entry,
-            "query_string": uq_query_string_entry,
+            "query_string": self.uq_query_string_entry,
             "set_operation": uq_set_operation_check,
             "set_membership": uq_set_membership_check,
             "set_comparison": uq_set_comparison_check,
@@ -1584,6 +1584,18 @@ class App:
         except Exception as e:
             msg_handler.show_error("Error", {e})
 
+    def validate_and_add(self, table_name):
+
+        query_text = self.uq_query_string_entry.get("1.0", tk.END).strip()
+
+        try: 
+            db.validate_query(query_text)
+        except Exception as e:
+            msg_handler.show_error("Invalid Query String", {e})
+            return
+
+        self.add_record(table_name)
+
     def update_record(self, table):
 
         """ 
@@ -1626,6 +1638,18 @@ class App:
         self.clear_fields(table)
 
         self.refresh_records(table)
+
+    def validate_and_update(self, table_name):
+
+        query_text = self.uq_query_string_entry.get("1.0", tk.END).strip()
+
+        try: 
+            db.validate_query(query_text)
+        except Exception as e:
+            msg_handler.show_error("Invalid Query String", {e})
+            return
+
+        self.update_record(table_name)
 
     def delete_record(self, table):
 
