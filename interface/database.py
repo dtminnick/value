@@ -427,4 +427,3 @@ class Database:
         self.cursor.close()
         self.conn.close()
     
-
