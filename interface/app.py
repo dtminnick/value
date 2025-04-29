@@ -83,6 +83,24 @@ class App:
 
         self.init_dict = {row['initiative_title']: row['initiative_id'] for row in self.init_list}
 
+        # Event id.
+
+        self.evnt_list = db.execute_query("SELECT event_title, event_id FROM event;")
+
+        self.evnt_dict = {row['event_title']: row['event_id'] for row in self.evnt_list}
+
+        # Plan id.
+
+        self.plan_list = db.execute_query("SELECT plan_name, plan_id FROM plan;")
+
+        self.plan_dict = {row['plan_name']: row['plan_id'] for row in self.plan_list}
+
+        # Metric id.
+
+        self.metr_list = db.execute_query("SELECT metric_name, metric_id FROM metric;")
+
+        self.metr_dict = {row['metric_name']: row['metric_id'] for row in self.metr_list}
+
         # Create a tab and UI for each table.
 
         # for table in self.tables:
@@ -273,7 +291,11 @@ class App:
 
         # self.metr_initiative_id_entry = ttk.Entry(metr_entry_frame)
 
-        self.metr_initiative_id_entry = self.binder.add_combobox("metr_init_id", self.init_dict, 1, 1, parent = metr_entry_frame)
+        self.metr_initiative_id_entry = self.binder.add_combobox("metr_init_id", 
+                                                                 self.init_dict, 
+                                                                 1, 
+                                                                 1, 
+                                                                 parent = metr_entry_frame)
 
         # self.metr_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
@@ -437,9 +459,15 @@ class App:
                                   text = "Initiative Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        evnt_initiative_id_entry = ttk.Entry(evnt_entry_frame)
+        # evnt_initiative_id_entry = ttk.Entry(evnt_entry_frame)
 
-        evnt_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.evnt_initiative_id_entry = self.binder.add_combobox("evnt_init_id", 
+                                                                 self.init_dict, 
+                                                                 1, 
+                                                                 1, 
+                                                                 parent = evnt_entry_frame)
+
+        # evnt_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event title.
 
@@ -565,7 +593,7 @@ class App:
 
         self.entries["event"] = {
             "event_id": evnt_event_id_entry,
-            "initiative_id": evnt_initiative_id_entry,
+            "initiative_id": self.evnt_initiative_id_entry,
             "event_title": evnt_event_title_entry,
             "event_description": evnt_event_description_entry,
             "event_date": evnt_event_date_entry,
@@ -1660,7 +1688,7 @@ class App:
                 continue
 
             widget = self.entries[table][col]
-            value = self.get_widget_value(widget)
+            value = self.binder.get_widget_value(widget)
 
             if value:
                 updated_data[col] = value
