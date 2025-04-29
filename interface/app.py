@@ -40,7 +40,7 @@ class App:
 
         self.root = root
 
-        binder = WidgetBinder(self.root)
+        self.binder = WidgetBinder(root, is_testing = True)
 
         self.root.title("Value Measurement Database Application")
 
@@ -74,6 +74,14 @@ class App:
         self.entries = {}
 
         self.trees = {}
+
+        # Create combo lists.
+
+        # Initiative id.
+
+        self.init_list = db.execute_query("SELECT initiative_title, initiative_id FROM initiative;")
+
+        self.init_dict = {row['initiative_title']: row['initiative_id'] for row in self.init_list}
 
         # Create a tab and UI for each table.
 
@@ -256,14 +264,18 @@ class App:
 
         metr_metric_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
 
+        # Initiative id.
+
         metr_initiative_id_label = ttk.Label(metr_entry_frame,
                                   width = 20,
                                   text = "Initiative Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        self.metr_initiative_id_entry = ttk.Entry(metr_entry_frame)
+        # self.metr_initiative_id_entry = ttk.Entry(metr_entry_frame)
 
-        self.metr_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.metr_initiative_id_entry = self.binder.add_combobox("metr_init_id", self.init_dict, 1, 1, parent = metr_entry_frame)
+
+        # self.metr_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         metr_metric_name_label = ttk.Label(metr_entry_frame,
                                     width = 20,
@@ -381,6 +393,8 @@ class App:
         self.frames["Metrics"] = metr_frame
 
         # Create metric entries.
+
+        init_id = self.binder.get_selected_id("metr_initiative_id_entry")
 
         self.entries["metric"] = {
             "metric_id": metr_metric_id_entry,
@@ -1560,6 +1574,23 @@ class App:
 
         self.refresh_records(table_name) 
 
+    def collect_form_data(self, table_name):
+        """Collect all current form inputs."""
+        if table_name not in self.entries:
+            print(f"Warning: Table '{table_name}' not found in entries.")
+            return {}
+
+        form_data = {}
+        for field_name, widget_or_value in self.entries[table_name].items():
+            if hasattr(widget_or_value, "winfo_exists"):  # It's a Tkinter widget
+                value = self.binder.get_widget_value(widget_or_value)
+            else:
+                # Assume already a direct value (like initiative_id)
+                value = widget_or_value
+
+            form_data[field_name] = value
+        return form_data
+
     def add_record(self, table):
 
         """
@@ -1572,11 +1603,16 @@ class App:
             return
         
         try:
-            data = {col: self.get_widget_value(self.entries[table][col]) or None for col in self.entries[table]}
 
-            # if table in self.hidden_ids:
-            #     for id_field, widget in self.hidden_ids[table].items():
-            #         data[id_field] = widget.get() or None
+            data = self.collect_form_data(table)
+
+            # data = {col: self.binder.get_widget_value(self.entries[table][col]) or None for col in self.entries[table]}
+
+            initiative_title = self.entries["metric"]["initiative_id"]
+            print(f"Selected initiative title: {initiative_title}")
+
+            initiative_id = self.binder.get_id_entry_value("metr_init_id")
+            print(f"Resolved initiative_id: {initiative_id}")
 
             db.insert(table, data)
             self.clear_fields(table)
@@ -1713,7 +1749,7 @@ class App:
         for i, col in enumerate(columns):
             widget = self.entries[table][col]
             value = values[i] if values[i] is not None else ""
-            self.set_widget_value(widget, value)
+            self.binder.set_value(widget, value)
 
     def clear_fields(self, table):
 
@@ -1723,7 +1759,7 @@ class App:
         """
 
         for col in self.entries[table]:
-            self.set_widget_value(self.entries[table][col], "")
+            self.binder.set_widget_value(self.entries[table][col], "")
 
     def run_selected_query(self):
 
@@ -1824,79 +1860,79 @@ class App:
         except Exception as e:
                 msg_handler.show_error("Database Error", {e})
         
-    def get_widget_value(self, widget):
-        """
-        Retrieves the value from a Tkinter input widget, handling each widget type appropriately.
+    # def get_widget_value(self, widget):
+    #     """
+    #     Retrieves the value from a Tkinter input widget, handling each widget type appropriately.
 
-        - For `tk.Entry` widgets (single-line input), returns the text content.
-        - For `tk.Text` widgets (multi-line input), retrieves the text from the start to the end, excluding the trailing newline.
-        - For `ttk.Combobox` widgets, retrieves the corresponding ID based on the selected title.
+    #     - For `tk.Entry` widgets (single-line input), returns the text content.
+    #     - For `tk.Text` widgets (multi-line input), retrieves the text from the start to the end, excluding the trailing newline.
+    #     - For `ttk.Combobox` widgets, retrieves the corresponding ID based on the selected title.
 
-        Parameters
-        ----------
-        widget : tk.Widget
-            The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) from which the value is retrieved.
+    #     Parameters
+    #     ----------
+    #     widget : tk.Widget
+    #         The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) from which the value is retrieved.
 
-        Returns
-        -------
-        str or None
-            The cleaned text content from the widget, or the corresponding ID for a combobox.
-        """
-        if isinstance(widget, tk.Text):
-            return widget.get("1.0", "end-1c").strip()
+    #     Returns
+    #     -------
+    #     str or None
+    #         The cleaned text content from the widget, or the corresponding ID for a combobox.
+    #     """
+    #     if isinstance(widget, tk.Text):
+    #         return widget.get("1.0", "end-1c").strip()
 
-        elif isinstance(widget, ttk.Combobox):
-            selected_title = widget.get().strip()  # Get the selected title from the combobox
-            combo_maps = self.combo_value_maps.get(widget)
-            if combo_maps:
-                title_to_id = combo_maps.get("title_to_id")
-                if title_to_id:
-                    # Return the corresponding ID for the selected title
-                    return title_to_id.get(selected_title, None)
-            return selected_title  # Return title if no mapping exists
+    #     elif isinstance(widget, ttk.Combobox):
+    #         selected_title = widget.get().strip()  # Get the selected title from the combobox
+    #         combo_maps = self.combo_value_maps.get(widget)
+    #         if combo_maps:
+    #             title_to_id = combo_maps.get("title_to_id")
+    #             if title_to_id:
+    #                 # Return the corresponding ID for the selected title
+    #                 return title_to_id.get(selected_title, None)
+    #         return selected_title  # Return title if no mapping exists
 
-        elif isinstance(widget, ttk.Checkbutton):
-            var_name = widget.cget("variable")
-            if var_name:
-                return bool(self.root.getvar(var_name))
+    #     elif isinstance(widget, ttk.Checkbutton):
+    #         var_name = widget.cget("variable")
+    #         if var_name:
+    #             return bool(self.root.getvar(var_name))
 
-        elif hasattr(widget, "get"):
-            return widget.get().strip()
+    #     elif hasattr(widget, "get"):
+    #         return widget.get().strip()
 
-        return None
+    #     return None
 
-    def set_widget_value(self, widget, value):
-        """
-        Sets the given value into a Tkinter input widget, handling each widget type appropriately.
+    # def set_widget_value(self, widget, value):
+    #     """
+    #     Sets the given value into a Tkinter input widget, handling each widget type appropriately.
 
-        - For `tk.Entry` widgets (single-line input), sets the provided value as the widget's text.
-        - For `tk.Text` widgets (multi-line input), clears the existing text and inserts the new value.
-        - For `ttk.Combobox` widgets, sets the display value based on a mapping from ID to title.
+    #     - For `tk.Entry` widgets (single-line input), sets the provided value as the widget's text.
+    #     - For `tk.Text` widgets (multi-line input), clears the existing text and inserts the new value.
+    #     - For `ttk.Combobox` widgets, sets the display value based on a mapping from ID to title.
 
-        Parameters
-        ----------
-        widget : tk.Widget
-            The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) to which the value will be set.
+    #     Parameters
+    #     ----------
+    #     widget : tk.Widget
+    #         The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) to which the value will be set.
 
-        value : str or int
-            The value to be inserted into the widget. For `ttk.Combobox`, this is the ID (which will be mapped to the title).
+    #     value : str or int
+    #         The value to be inserted into the widget. For `ttk.Combobox`, this is the ID (which will be mapped to the title).
 
-        Returns
-        -------
-        None
-        """
-        if isinstance(widget, (tk.Entry, ttk.Entry)):
-            self._set_entry_value(widget, value)
-        elif isinstance(widget, ttk.Combobox):
-            self._set_combobox_value(widget, value)
-        elif isinstance(widget, ttk.Checkbutton):
-            self._set_checkbutton_value(widget, value)
-        elif isinstance(widget, tk.Text):
-            self._set_text_value(widget, value)
-        elif hasattr(widget, "delete") and hasattr(widget, "insert"):
-            self._set_generic_value(widget, value)
-        else:
-            print(f"Unsupported widget type: {type(widget)}")
+    #     Returns
+    #     -------
+    #     None
+    #     """
+    #     if isinstance(widget, (tk.Entry, ttk.Entry)):
+    #         self._set_entry_value(widget, value)
+    #     elif isinstance(widget, ttk.Combobox):
+    #         self._set_combobox_value(widget, value)
+    #     elif isinstance(widget, ttk.Checkbutton):
+    #         self._set_checkbutton_value(widget, value)
+    #     elif isinstance(widget, tk.Text):
+    #         self._set_text_value(widget, value)
+    #     elif hasattr(widget, "delete") and hasattr(widget, "insert"):
+    #         self._set_generic_value(widget, value)
+    #     else:
+    #         print(f"Unsupported widget type: {type(widget)}")
 
 
     def _set_entry_value(self, widget, value):
@@ -2026,102 +2062,102 @@ class App:
             tab_index = self.notebook.index(frame)
             self.notebook.select(tab_index)
 
-    def register_combobox(self, widget, id_to_title_map):
-        """
-        Register a combobox with ID-to-title and title-to-ID mappings.
+    # def register_combobox(self, widget, id_to_title_map):
+    #     """
+    #     Register a combobox with ID-to-title and title-to-ID mappings.
 
-        Parameters
-        ----------
-        widget : ttk.Combobox
-            The combobox widget to register.
+    #     Parameters
+    #     ----------
+    #     widget : ttk.Combobox
+    #         The combobox widget to register.
 
-        id_to_title_map : dict
-            Dictionary mapping from ID to title.
-        """
-        title_to_id = {v: k for k, v in id_to_title_map.items()}
+    #     id_to_title_map : dict
+    #         Dictionary mapping from ID to title.
+    #     """
+    #     title_to_id = {v: k for k, v in id_to_title_map.items()}
 
-        # Save both directions for later use
-        self.combo_value_maps[widget] = {
-            "id_to_title": id_to_title_map,
-            "title_to_id": title_to_id
-        }
+    #     # Save both directions for later use
+    #     self.combo_value_maps[widget] = {
+    #         "id_to_title": id_to_title_map,
+    #         "title_to_id": title_to_id
+    #     }
 
-        # Update the combobox values
-        widget['values'] = list(title_to_id.keys())
+    #     # Update the combobox values
+    #     widget['values'] = list(title_to_id.keys())
 
 
-    def update_combobox_from_treeview(self, widget, selected_id):
-        """
-        Update the combobox based on a selected ID
-        """
-        combo_maps = self.combo_value_maps.get(widget)
-        if combo_maps:
-            id_to_title = combo_maps.get("id_to_title")
-            if id_to_title:
-                # Set the combobox to display the corresponding title
-                title = id_to_title.get(selected_id, "")
-                widget.set(title)
+    # def update_combobox_from_treeview(self, widget, selected_id):
+    #     """
+    #     Update the combobox based on a selected ID
+    #     """
+    #     combo_maps = self.combo_value_maps.get(widget)
+    #     if combo_maps:
+    #         id_to_title = combo_maps.get("id_to_title")
+    #         if id_to_title:
+    #             # Set the combobox to display the corresponding title
+    #             title = id_to_title.get(selected_id, "")
+    #             widget.set(title)
 
-    def setup_widgets(self):
-        """
-        Set up widgets for different tables.
-        Example: for 'metric' and 'initiative' tables, each may have multiple comboboxes.
-        """
-        # For example, set up comboboxes for the 'metric' and 'initiative' tables
-        self.setup_combobox_for_table("metric", ["metric_column_1", "metric_column_2"])
-        self.setup_combobox_for_table("initiative", ["initiative_column_1", "initiative_column_2"])
+    # def setup_widgets(self):
+    #     """
+    #     Set up widgets for different tables.
+    #     Example: for 'metric' and 'initiative' tables, each may have multiple comboboxes.
+    #     """
+    #     # For example, set up comboboxes for the 'metric' and 'initiative' tables
+    #     self.setup_combobox_for_table("metric", ["metric_column_1", "metric_column_2"])
+    #     self.setup_combobox_for_table("initiative", ["initiative_column_1", "initiative_column_2"])
 
-    def setup_combobox_for_table(self, table_name, columns):
-        """
-        Set up multiple comboboxes for a specific table, bind them to hidden entries, and add widgets to the layout.
-        Each combobox corresponds to a specific column.
-        """
-        for column in columns:
-            # Fetch rows for each column (e.g., 'metric_column_1', 'metric_column_2')
-            rows = db.execute_query(f"SELECT {table_name}_id, {column} FROM {table_name}")
+    # def setup_combobox_for_table(self, table_name, columns):
+    #     """
+    #     Set up multiple comboboxes for a specific table, bind them to hidden entries, and add widgets to the layout.
+    #     Each combobox corresponds to a specific column.
+    #     """
+    #     for column in columns:
+    #         # Fetch rows for each column (e.g., 'metric_column_1', 'metric_column_2')
+    #         rows = db.execute_query(f"SELECT {table_name}_id, {column} FROM {table_name}")
 
-            # Create combobox and hidden entry widget
-            combobox = ttk.Combobox(self.root, values=[row[1] for row in rows])  # Titles for the combobox
-            entry = tk.Entry(self.root)  # Hidden entry widget to store the selected ID
+    #         # Create combobox and hidden entry widget
+    #         combobox = ttk.Combobox(self.root, values=[row[1] for row in rows])  # Titles for the combobox
+    #         entry = tk.Entry(self.root)  # Hidden entry widget to store the selected ID
 
-            # Store widgets in dictionaries for future reference
-            combobox_key = f"{table_name}_{column}_combobox"
-            entry_key = f"{table_name}_{column}_entry"
-            self.comboboxes[combobox_key] = combobox
-            self.entries[entry_key] = entry
+    #         # Store widgets in dictionaries for future reference
+    #         combobox_key = f"{table_name}_{column}_combobox"
+    #         entry_key = f"{table_name}_{column}_entry"
+    #         self.comboboxes[combobox_key] = combobox
+    #         self.entries[entry_key] = entry
 
-            # Bind the combobox to the hidden entry (use helper function)
-            # bind_combobox_to_entry(combobox, entry, rows, id_key=f"{table_name}_id", title_key=column)
+    #         # Bind the combobox to the hidden entry (use helper function)
+    #         # bind_combobox_to_entry(combobox, entry, rows, id_key=f"{table_name}_id", title_key=column)
 
-            # Add the combobox and entry widgets to the UI layout
-            combobox.grid(row=columns.index(column), column=0)
-            entry.grid(row=columns.index(column), column=1)
+    #         # Add the combobox and entry widgets to the UI layout
+    #         combobox.grid(row=columns.index(column), column=0)
+    #         entry.grid(row=columns.index(column), column=1)
 
-    def bind_comboboxes_for_table(self, table, combo_entry_map):
-        """
-        Bind comboboxes and entry widgets for each table dynamically.
+    # def bind_comboboxes_for_table(self, table, combo_entry_map):
+    #     """
+    #     Bind comboboxes and entry widgets for each table dynamically.
         
-        - `table`: The name of the table (e.g., 'initiative').
-        - `combo_entry_map`: A dictionary mapping comboboxes to entry widgets for each field in the table.
-        """
-        try:
-            # Fetch rows from the database based on the table
-            query = f"SELECT * FROM {table}"
-            rows = db.execute_query(query)
+    #     - `table`: The name of the table (e.g., 'initiative').
+    #     - `combo_entry_map`: A dictionary mapping comboboxes to entry widgets for each field in the table.
+    #     """
+    #     try:
+    #         # Fetch rows from the database based on the table
+    #         query = f"SELECT * FROM {table}"
+    #         rows = db.execute_query(query)
             
-            for combo, entry in combo_entry_map.items():
-                # Assuming each combobox and entry pair corresponds to one field in the table
-                # For example, initiative_id and initiative_title in the 'initiative' table
+    #         for combo, entry in combo_entry_map.items():
+    #             # Assuming each combobox and entry pair corresponds to one field in the table
+    #             # For example, initiative_id and initiative_title in the 'initiative' table
                 
-                # Here, `combo` is the combobox and `entry` is the hidden entry widget
-                if combo and entry:
-                    # Bind the combobox to the entry widget with the correct title-to-id mapping
-                    id_key = f"{table}_id"  # Assume the ID field in the table is the table name followed by '_id'
-                    title_key = f"{table}_title"  # Assume the title field follows a similar convention
+    #             # Here, `combo` is the combobox and `entry` is the hidden entry widget
+    #             if combo and entry:
+    #                 # Bind the combobox to the entry widget with the correct title-to-id mapping
+    #                 id_key = f"{table}_id"  # Assume the ID field in the table is the table name followed by '_id'
+    #                 title_key = f"{table}_title"  # Assume the title field follows a similar convention
                     
-                    self.combo_binder.bind(combo, entry, rows, id_key=id_key, title_key=title_key)
-        except Exception as e:
-            messagebox.showerror("Error", f"Error binding comboboxes for {table}: {e}")
+    #                 self.combo_binder.bind(combo, entry, rows, id_key=id_key, title_key=title_key)
+    #     except Exception as e:
+    #         messagebox.showerror("Error", f"Error binding comboboxes for {table}: {e}")
 
 
 
