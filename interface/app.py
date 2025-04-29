@@ -1515,122 +1515,122 @@ class App:
 
         self.frames["Run Queries"] = query_frame
 
-    def create_table_ui(self, parent, table_name):
+    # def create_table_ui(self, parent, table_name):
 
-        """
+    #     """
         
         
-        """
+    #     """
 
-        frame = parent
+    #     frame = parent
 
-        columns = db.get_columns(table_name)
+    #     columns = db.get_columns(table_name)
 
-        if not columns:
-            return
+    #     if not columns:
+    #         return
         
-        self.entries[table_name] = {}
+    #     self.entries[table_name] = {}
 
-        # Input fields.
+    #     # Input fields.
 
-        form_frame = ttk.Frame(frame)
+    #     form_frame = ttk.Frame(frame)
 
-        form_frame.pack(fill = "x", padx = 20, pady = 20)
+    #     form_frame.pack(fill = "x", padx = 20, pady = 20)
 
-        for i, col in enumerate(columns):
-            ttk.Label(form_frame, text = f"{col}:").grid(row = i, column = 0, padx = 5, pady = 5, sticky = "w")
+    #     for i, col in enumerate(columns):
+    #         ttk.Label(form_frame, text = f"{col}:").grid(row = i, column = 0, padx = 5, pady = 5, sticky = "w")
 
-            if table_name == "user_query" and i == len(columns) - 1:
+    #         if table_name == "user_query" and i == len(columns) - 1:
 
-                # Use a text widget for the last field, i.e. query_string.
+    #             # Use a text widget for the last field, i.e. query_string.
 
-                entry = tk.Text(form_frame, height = 10, width = 100, wrap = "word", font = ("TkDefaultFont", 10))
+    #             entry = tk.Text(form_frame, height = 10, width = 100, wrap = "word", font = ("TkDefaultFont", 10))
 
-                entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "w")
+    #             entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "w")
 
-                # Add vertical scrollbar to Text widget.
+    #             # Add vertical scrollbar to Text widget.
 
-                scrollbar = ttk.Scrollbar(form_frame, orient = "vertical", command = entry.yview)
+    #             scrollbar = ttk.Scrollbar(form_frame, orient = "vertical", command = entry.yview)
 
-                scrollbar.grid(row = i, column = 2, sticky = "ns", padx = 5, pady = 5)
+    #             scrollbar.grid(row = i, column = 2, sticky = "ns", padx = 5, pady = 5)
 
-                # Link the Text widget with the scrollbar.
+    #             # Link the Text widget with the scrollbar.
 
-                entry.configure(yscrollcommand = scrollbar.set)
+    #             entry.configure(yscrollcommand = scrollbar.set)
 
-            else:
+    #         else:
 
-                entry = ttk.Entry(form_frame, width = 100)
+    #             entry = ttk.Entry(form_frame, width = 100)
 
-                entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "ew")
+    #             entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "ew")
 
-            self.entries[table_name][col] = entry
+    #         self.entries[table_name][col] = entry
 
-        # Add CRUD buttons.
+    #     # Add CRUD buttons.
 
-        button_frame = ttk.Frame(frame)
+    #     button_frame = ttk.Frame(frame)
 
-        button_frame.pack(fill = "x", padx = 20, pady = 20)
+    #     button_frame.pack(fill = "x", padx = 20, pady = 20)
 
-        add_btn = ttk.Button(button_frame, 
-                   text = "Add Record", 
-                   command = lambda t = table_name: self.add_record(t))
+    #     add_btn = ttk.Button(button_frame, 
+    #                text = "Add Record", 
+    #                command = lambda t = table_name: self.add_record(t))
         
-        add_btn.grid(row = 0, column = 0, padx = 10)
+    #     add_btn.grid(row = 0, column = 0, padx = 10)
 
-        update_btn = ttk.Button(button_frame, 
-                   text = "Update Record", 
-                command = lambda t = table_name: self.update_record(t))
+    #     update_btn = ttk.Button(button_frame, 
+    #                text = "Update Record", 
+    #             command = lambda t = table_name: self.update_record(t))
         
-        update_btn.grid(row = 0, column = 1, padx = 10)
+    #     update_btn.grid(row = 0, column = 1, padx = 10)
 
-        delete_btn = ttk.Button(button_frame, 
-                   text = "Delete Record", 
-                   command = lambda t = table_name: self.delete_record(t))
+    #     delete_btn = ttk.Button(button_frame, 
+    #                text = "Delete Record", 
+    #                command = lambda t = table_name: self.delete_record(t))
         
-        delete_btn.grid(row = 0, column = 2, padx = 10)
+    #     delete_btn.grid(row = 0, column = 2, padx = 10)
 
-        refresh_btn = ttk.Button(button_frame, 
-                   text = "Refresh Records", 
-                   command = lambda t = table_name: self.refresh_records(t))
+    #     refresh_btn = ttk.Button(button_frame, 
+    #                text = "Refresh Records", 
+    #                command = lambda t = table_name: self.refresh_records(t))
         
-        refresh_btn.grid(row = 0, column = 3, padx = 10)
+    #     refresh_btn.grid(row = 0, column = 3, padx = 10)
 
-        # Add tooltips.
+    #     # Add tooltips.
 
-        Tooltip(add_btn, widget_id = "add_btn")
+    #     Tooltip(add_btn, widget_id = "add_btn")
 
-        Tooltip(update_btn, widget_id = "update_btn")
+    #     Tooltip(update_btn, widget_id = "update_btn")
 
-        Tooltip(delete_btn, widget_id = "delete_btn")
+    #     Tooltip(delete_btn, widget_id = "delete_btn")
         
-        Tooltip(refresh_btn, widget_id = "refresh_btn")
+    #     Tooltip(refresh_btn, widget_id = "refresh_btn")
 
-        # Add data display to see the data in tables.
+    #     # Add data display to see the data in tables.
 
-        tree_frame = ttk.Frame(frame)
+    #     tree_frame = ttk.Frame(frame)
 
-        tree_frame.pack(fill = "both", expand = True, padx = 20, pady = 20)
+    #     tree_frame.pack(fill = "both", expand = True, padx = 20, pady = 20)
 
-        Tooltip(tree_frame, widget_id = "tree_frame")
+    #     Tooltip(tree_frame, widget_id = "tree_frame")
 
-        scrollbar = ttk.Scrollbar(tree_frame, orient = "vertical")
+    #     scrollbar = ttk.Scrollbar(tree_frame, orient = "vertical")
 
-        self.trees[table_name] = ttk.Treeview(tree_frame, columns = columns, show = "headings", yscrollcommand = scrollbar.set)
+    #     self.trees[table_name] = ttk.Treeview(tree_frame, columns = columns, show = "headings", yscrollcommand = scrollbar.set)
 
-        scrollbar.config(command = self.trees[table_name].yview)
+    #     scrollbar.config(command = self.trees[table_name].yview)
 
-        scrollbar.pack(side = "right", fill = "y")
+    #     scrollbar.pack(side = "right", fill = "y")
 
-        for col in columns:
-            self.trees[table_name].heading(col, text = col)
-            self.trees[table_name].column(col, width = 120, anchor = "w")
+    #     for col in columns:
+    #         self.trees[table_name].heading(col, text = col)
+    #         self.trees[table_name].column(col, width = 120, anchor = "w")
 
-        self.trees[table_name].pack(fill = "both", expand = True)
+    #     self.trees[table_name].pack(fill = "both", expand = True)
 
-        self.trees[table_name].bind("<<TreeviewSelect>>", lambda event, t = table_name: self.select_record(t))
+    #     self.trees[table_name].bind("<<TreeviewSelect>>", lambda event, t = table_name: self.select_record(t))
 
-        self.refresh_records(table_name) 
+    #     self.refresh_records(table_name) 
 
     def collect_form_data(self, table_name):
         """Collect all current form inputs."""
