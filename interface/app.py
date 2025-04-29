@@ -1454,6 +1454,8 @@ class App:
         self.query_dropdown.grid(row=1, column=1, padx=5, pady=2, sticky="w")
 
         ttk.Label(query_selection_frame, text="Select Query:").grid(row=1, column=0, padx=5, pady=2, sticky="w")
+
+        self.update_query_dropdown()
         
         # Create query selection button frame.
 
