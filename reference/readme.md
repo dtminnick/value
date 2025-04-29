@@ -33,17 +33,17 @@ tables with CRUD (Create, Read, Update, Delete) functionality.
 - Python 3.x
 - MySQL Server
 - Required Python Packages:
-  ```bash
-  configparser
-  datetime
-  logging
-  mysql-connector
-  os
-  re
-  tkcalendar
-  tkinter
-  uuid
-  ```
+```{bash}
+configparser
+datetime
+logging
+mysql-connector
+os
+re
+tkcalendar
+tkinter
+uuid
+```
 ### Database Setup
 
 1. Create a MySQL database named `value`.
@@ -77,47 +77,68 @@ python app.py
 
 ## File Structure
 
-- `config.ini` - 
+- `config.ini` - Stores MySQL login credentials and connection details.
 - `app.py` - The main GUI application.
 - `database.py` - Database interaction layer.
-- `downloader.py` - 
-- `messenger.py` - 
-- `widget_binder.py` - 
+- `downloader.py` - Utility class; handles the downloading of query results to a csv file.
+- `messenger.py` - Utility class; displays messages and logging output in application.
+- `widget_binder.py` - Utility class; manages and synchronizes values across multiple Tkinter widgets.
+
+## Config.ini
+
+This file stores MySQL login credentials and connection details in a 
+structured format under a section named [value]. Each line represents a key-value 
+pair used to establish a connection to a MySQL database:
+
+`host = localhost`: Specifies that the MySQL server is running on the local machine.
+
+`user = root`: The username used to connect to the MySQL server.
+
+`password = XXXXXXXX`: Placeholder for the actual password associated with the user.
+
+`database = value`: The name of the database to connect to.
+
+This file can be securely read by the `database.py` codes (e.g., using configparser) to 
+centralize and separate configuration from code.
 
 ## Class Structure Diagram
 
-The following diagrams provide a clear visual map of the system's structure: its 
+The following diagram provides a clear visual map of the system's structure: its 
 classes, attributes, methods, and relationships.
 
 ![Class Structure Diagram](class_structure.png)
 
 ## Error Handling
 
-To display exception messages from value_db.py in value_app.py, code in value_db.py 
-raises exceptions instead of just printing them. Errors are then caught in 
-value_app.py to be displayed in the GUI.
+Exception messages are raised from `database.py` and other classes, and displayed in 
+the application using the functionality of `messenger.py`.
 
-To accomplish this, database calls are wrapped in try-except blocks and any 
-error messages are displayed via message boxes.
+To accomplish this, database calls and other functions are wrapped in try-except 
+blocks and any error messages are displayed via message boxes.
 
-Here’s a comprehensive README section for SQL integration, detailing the database connection, functions, and usage for `value_db.py`. This documentation will help developers understand how to work with the MySQL database in your project.
+Here’s a comprehensive README section for SQL integration, detailing the database 
+connection, functions, and usage for `value_db.py`. This documentation will help 
+developers understand how to work with the MySQL database in your project.
 
 ## SQL Integration Guidelines
 
 ### Overview
 
-This project includes `value_db.py`, which provides a Python-based interface to a MySQL database. The database handles value measurement operations, allowing users to insert, fetch, update, and delete records efficiently.
+This project includes `database.py`, which provides a Python-based interface to 
+a MySQL database. The database handles value measurement operations, allowing 
+users to insert, fetch, update, and delete records efficiently.
 
 ### Database Connection
 
-The `Database` class in `value_db.py` establishes a connection to a MySQL database using the following credentials (configured in the script):
+The `Database` class in `value_db.py` establishes a connection to a MySQL database 
+using the following credentials (configured in the `config.ini` file):
 
 - **Host:** `localhost`
 - **User:** `root`
 - **Password:** `XXXXXXXX`
 - **Database:** `value`
 
-To modify the connection settings, update the `__init__` method in `value_db.py` accordingly.
+To modify the connection settings, update the configuration file.
 
 ### Methods Overview
 
@@ -179,20 +200,21 @@ The `Database` class provides several methods to interact with MySQL tables:
 
 ## Error Handling
 
-All SQL queries are wrapped in try-except blocks to catch `mysql.connector.Error`. If an error occurs, an exception is raised with a relevant message.
+All SQL queries are wrapped in try-except blocks to catch `mysql.connector.Error`. 
+If an error occurs, an exception is raised with a relevant message.
 
 ## Security Considerations
 
 - **Do not hardcode credentials in production.** Use environment variables or a configuration file.
-- **Validate user input** to prevent SQL injection.
+- **Validate user input and use parameterized queries** to prevent SQL injection.
 - **Implement role-based access control (RBAC)** in MySQL for secure operations.
 
 ## Example Usage
 
 Here’s how you can use the database class in a script:
 
-```python
-from value_db import Database
+```{python}
+from database import Database
 
 db = Database()
 
@@ -201,7 +223,6 @@ db.insert("users", {"name": "Alice", "email": "alice@example.com"})
 
 # Fetch records
 records = db.fetch_all("users")
-print(records)
 
 # Update a record
 db.update("users", {"email": "alice@newdomain.com"}, {"name": "Alice"})
@@ -217,7 +238,6 @@ db.close()
 
 - User authentication and access control.
 - Advanced filtering and search functionality.
-- Data export (CSV, Excel) features.
 
 ## License
 
@@ -225,6 +245,6 @@ This project is intended for internal use. Contact the author for usage permissi
 
 ## Author
 
-Developed by Donnie Minnick to satisfy the requirements for Deliverable 4 in the 
+Developed by Donnie Minnick to satisfy the requirements for Deliverable 5 in the 
 CS727 Relational Database Implementation and Applications course in the IIT MDS program.
 

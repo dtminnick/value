@@ -1406,26 +1406,54 @@ class App:
 
         query_frame = ttk.Frame(self.notebook)
 
+        # Map user-friendly filter names to DB column names.
+
+        self.query_type_filters = {
+            "All": None,
+            "Set Operation": "set_operation",
+            "Set Membership": "set_membership",
+            "Set Comparison": "set_comparison",
+            "Subquery": "subquery",
+            "CTE": "cte",
+            "Aggregate Function": "aggregate_function",
+            "Window Function": "window_function",
+            "OLAP": "olap"
+        }
+
         # Create query selection frame.
 
         query_selection_frame = ttk.Frame(query_frame)
 
         query_selection_frame.pack(fill = "x", padx = 10, pady = 10)
 
-        predefined_queries = db.execute_query("SELECT query_title, query_string FROM user_query ORDER BY query_title;")
+        # Create query filter combobox.
 
-        self.title_to_query_map = {q['query_title']: q['query_string'] for q in predefined_queries}
+        self.selected_query_type = tk.StringVar(value = "All")
 
+        filter_label = ttk.Label(query_selection_frame, text="Select Type:")
+
+        filter_label.grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
+
+        filter_dropdown = ttk.Combobox(query_selection_frame,
+                                    width = 50,
+                                    textvariable = self.selected_query_type,
+                                    values = list(self.query_type_filters.keys()),
+                                    state = "readonly")
+        
+        filter_dropdown.grid(row=0, column=1, padx=5, pady=2, sticky="w")
+
+        filter_dropdown.bind("<<ComboboxSelected>>", self.update_query_dropdown)
+        
         self.selected_query_title = tk.StringVar()
 
-        titles = list(self.title_to_query_map.keys())
+        self.query_dropdown = ttk.Combobox(query_selection_frame,
+                                        width=100,
+                                        textvariable=self.selected_query_title,
+                                        state="readonly")
+        
+        self.query_dropdown.grid(row=1, column=1, padx=5, pady=2, sticky="w")
 
-        query_dropdown_label = ttk.Label(query_selection_frame, text = "Select Query:").grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
-
-        query_dropdown = ttk.Combobox(query_selection_frame,
-                                      width = 100,
-                                      textvariable = self.selected_query_title,
-                                      values = titles).grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
+        ttk.Label(query_selection_frame, text="Select Query:").grid(row=1, column=0, padx=5, pady=2, sticky="w")
         
         # Create query selection button frame.
 
@@ -1469,6 +1497,27 @@ class App:
         self.notebook.add(query_frame, text = "Run Queries")
 
         self.frames["Run Queries"] = query_frame
+
+    def update_query_dropdown(self, event = None):
+
+        selected_type = self.selected_query_type.get()
+
+        column = self.query_type_filters[selected_type]
+
+        if column:
+            sql = f"SELECT query_title, query_string FROM user_query WHERE {column} = 1 ORDER BY query_title;"
+        else:
+            sql = "SELECT query_title, query_string FROM user_query ORDER BY query_title;"
+
+        filtered_queries = db.execute_query(sql)
+
+        self.title_to_query_map = {q['query_title']: q['query_string'] for q in filtered_queries}
+
+        titles = list(self.title_to_query_map.keys())
+
+        self.query_dropdown['values'] = titles
+
+        self.selected_query_title.set('')  # Clear selection on filter change
 
     def collect_form_data(self, table_name):
 
