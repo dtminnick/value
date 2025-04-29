@@ -9,10 +9,6 @@ from tkcalendar import DateEntry
 from widget_binder import WidgetBinder
 import tkinter.font as tkfont
 
-
-# import ttkbootstrap as tb
-# from ttkbootstrap.constants import *
-
 db = Database()
 
 msg_handler = Messenger()
@@ -24,18 +20,32 @@ class App:
     """
     A GUI application for interacting with the Value Measurement MySQL database.
 
-    Features
-    --------
-
-    
     """
 
     def __init__(self, root):
         
         """
-        Initializing application, creates tab for each table and 
-        dynamicallty generates UI components.
+        Initializes application, creates tab for each table and generates UI components.
+
+        This constructor sets up the tabs and UI elements for managing initiatives. For each tab, 
+        the constructor performs the following steps:
+
+        1. Creates a frame for the tab and adds it to the notebook.
+        2. Constructs entry widgets for user input (e.g., initiative ID, title, description, dates).
+        3. Adds labels, entry fields, and date pickers, arranging them in a grid layout.
+        4. Configures buttons for performing CRUD operations (Add, Update, Delete, Refresh).
+        5. Sets up a treeview to display records from the associated table.
+        6. Initializes relevant event handlers for selecting, updating, and deleting records.
+
+        The `self.entries` dictionary is populated with references to the input fields for easy access 
+        during data collection and updates.
         
+        Additionally, the `self.trees` dictionary is used to store the treeview widget for the "Initiatives" 
+        tab for record management and display.
+
+        Notes:
+            - The structure is designed to allow easy addition of more tabs in the future, following the same pattern.
+
         """
 
         self.root = root
@@ -57,15 +67,6 @@ class App:
         style = ttk.Style()
 
         style.configure('TNotebook.tab', width = 18, padding = [10, 10])
-
-        # self.tables = ['initiative', 
-        #                'event',
-        #                'metric',
-        #                'plan',
-        #                'event_plan',
-        #                'global_metric_value',
-        #                'plan_metric_value',
-        #                'user_query']
         
         # Store frames for each table, fields per table and treeview widgets per table.
 
@@ -75,39 +76,23 @@ class App:
 
         self.trees = {}
 
-        # Create combo lists.
-
-        # Initiative id.
+        # Create combo dictionaries for initiatives, events, plans and metrics.
 
         self.init_list = db.execute_query("SELECT initiative_title, initiative_id FROM initiative;")
 
         self.init_dict = {row['initiative_title']: row['initiative_id'] for row in self.init_list}
 
-        # Event id.
-
         self.evnt_list = db.execute_query("SELECT event_title, event_id FROM event;")
 
         self.evnt_dict = {row['event_title']: row['event_id'] for row in self.evnt_list}
-
-        # Plan id.
 
         self.plan_list = db.execute_query("SELECT plan_name, plan_id FROM plan;")
 
         self.plan_dict = {row['plan_name']: row['plan_id'] for row in self.plan_list}
 
-        # Metric id.
-
         self.metr_list = db.execute_query("SELECT metric_name, metric_id FROM metric;")
 
         self.metr_dict = {row['metric_name']: row['metric_id'] for row in self.metr_list}
-
-        # Create a tab and UI for each table.
-
-        # for table in self.tables:
-        #     frame = ttk.Frame(self.notebook)
-        #     self.notebook.add(frame, text = table)
-        #     self.frames[table] = frame
-        #     self.create_table_ui(frame, table)
 
         # ------------------------
         # Create Initiatives Frame
@@ -289,15 +274,12 @@ class App:
                                   text = "Initiative Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        # self.metr_initiative_id_entry = ttk.Entry(metr_entry_frame)
-
         self.metr_initiative_id_entry = self.binder.add_combobox("metr_init_id", 
                                                                  self.init_dict, 
                                                                  1, 
-                                                                 1, 
+                                                                 1,
+                                                                 50,
                                                                  parent = metr_entry_frame)
-
-        # self.metr_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         metr_metric_name_label = ttk.Label(metr_entry_frame,
                                     width = 20,
@@ -459,15 +441,12 @@ class App:
                                   text = "Initiative Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        # evnt_initiative_id_entry = ttk.Entry(evnt_entry_frame)
-
         self.evnt_initiative_id_entry = self.binder.add_combobox("evnt_init_id", 
                                                                  self.init_dict, 
                                                                  1, 
                                                                  1, 
+                                                                 50,
                                                                  parent = evnt_entry_frame)
-
-        # evnt_initiative_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event title.
 
@@ -476,7 +455,7 @@ class App:
                                   text = "Event Title:"
                                   ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        evnt_event_title_entry = ttk.Entry(evnt_entry_frame)
+        evnt_event_title_entry = ttk.Entry(evnt_entry_frame, width = 100)
 
         evnt_event_title_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
@@ -487,7 +466,7 @@ class App:
                                   text = "Description:"
                                   ).grid(row = 3, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        evnt_event_description_entry = ttk.Entry(evnt_entry_frame)
+        evnt_event_description_entry = ttk.Entry(evnt_entry_frame, width = 100)
 
         evnt_event_description_entry.grid(row = 3, column = 1, padx = 5, pady = 2, sticky = "w")
 
@@ -509,8 +488,6 @@ class App:
         evnt_activation_id_entry = ttk.Entry(evnt_entry_frame)
 
         evnt_activation_id_entry.grid(row = 5, column = 1, padx = 5, pady = 2, sticky = "w")
-
-        # Bind entry frame.
 
         self.notebook.add(evnt_frame, text = "Events")
 
@@ -732,16 +709,13 @@ class App:
                                   width = 20,
                                   text = "Plan Id:"
                                   ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
-        
-        # ep_plan_id_entry = ttk.Entry(ep_entry_frame, width = 20)
 
         self.ep_plan_id_entry = self.binder.add_combobox("ep_plan_id", 
                                                           self.plan_dict, 
                                                           0, 
                                                           1, 
+                                                          50,
                                                           parent = ep_entry_frame)
-
-        # ep_plan_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event id.
 
@@ -750,15 +724,12 @@ class App:
                                   text = "Event Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        # ep_event_id_entry = ttk.Entry(ep_entry_frame)
-
         self.ep_event_id_entry = self.binder.add_combobox("ep_event_id", 
                                                           self.evnt_dict, 
                                                           1, 
                                                           1, 
+                                                          70,
                                                           parent = ep_entry_frame)
-
-        # ep_event_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
@@ -867,16 +838,13 @@ class App:
                                   width = 20,
                                   text = "Metric Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
-        
-        # gmv_metric_id_entry = ttk.Entry(gmv_entry_frame, width = 20)
 
         self.gmv_metric_id_entry = self.binder.add_combobox("gmv_metric_id", 
                                                           self.metr_dict, 
                                                           1, 
                                                           1, 
+                                                          50,
                                                           parent = gmv_entry_frame)
-
-        # gmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Metric date.
 
@@ -1008,16 +976,13 @@ class App:
                                   width = 20,
                                   text = "Metric Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
-        
-        # pmv_metric_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
 
         self.pmv_metric_id_entry = self.binder.add_combobox("pmv_metric_id", 
                                                           self.metr_dict, 
                                                           1, 
                                                           1, 
+                                                          50,
                                                           parent = pmv_entry_frame)
-
-        # pmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Plan id.
 
@@ -1025,16 +990,13 @@ class App:
                                   width = 20,
                                   text = "Plan Id:"
                                   ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
-        
-        # pmv_plan_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
 
         self.pmv_plan_id_entry = self.binder.add_combobox("pmv_plan_id", 
                                                           self.plan_dict, 
                                                           2, 
                                                           1, 
+                                                          50,
                                                           parent = pmv_entry_frame)
-
-        # pmv_plan_id_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Metric date.
 
@@ -1155,15 +1117,11 @@ class App:
 
         uq_left_frame = ttk.Frame(uq_entry_frame)
 
-        uq_left_frame.pack(side="left", fill="y")   # Only fill vertically, NOT horizontally
+        uq_left_frame.pack(side="left", fill="y")
 
         uq_right_frame = ttk.Frame(uq_entry_frame)
 
-        uq_right_frame.pack(side="left", fill="both", expand=True)  # Expand into remaining space
-
-        # uq_entry_frame = ttk.Frame(uq_frame)
-
-        # uq_entry_frame.pack(fill = "x", padx = 10, pady = 10)
+        uq_right_frame.pack(side="left", fill="both", expand=True)
         
         # Query id.
 
@@ -1221,10 +1179,12 @@ class App:
         entry_font_name = style.lookup('TEntry', 'font')
 
         # Fallback if style lookup doesn't return a font name
+
         if not entry_font_name:
             entry_font_name = 'TkDefaultFont'
 
         # Create a font object using the ttk.Entry font
+
         entry_font = tkfont.nametofont(entry_font_name)
         
         self.uq_query_string_entry = tk.Text(uq_left_frame, height = 10, width = 100, wrap = "word", font = entry_font)
@@ -1234,12 +1194,8 @@ class App:
         # Checkbox frame.
 
         uq_checkbox_frame = ttk.Frame(uq_right_frame)
-        
-        # uq_checkbox_frame.grid(row=0, column=0, pady=10, padx=10, sticky = "nsew")
 
         uq_checkbox_frame.pack(anchor="center")
-
-        # uq_right_frame.grid_columnconfigure(0, weight=1)
 
         # Set operation.
 
@@ -1515,125 +1471,35 @@ class App:
 
         self.frames["Run Queries"] = query_frame
 
-    # def create_table_ui(self, parent, table_name):
-
-    #     """
-        
-        
-    #     """
-
-    #     frame = parent
-
-    #     columns = db.get_columns(table_name)
-
-    #     if not columns:
-    #         return
-        
-    #     self.entries[table_name] = {}
-
-    #     # Input fields.
-
-    #     form_frame = ttk.Frame(frame)
-
-    #     form_frame.pack(fill = "x", padx = 20, pady = 20)
-
-    #     for i, col in enumerate(columns):
-    #         ttk.Label(form_frame, text = f"{col}:").grid(row = i, column = 0, padx = 5, pady = 5, sticky = "w")
-
-    #         if table_name == "user_query" and i == len(columns) - 1:
-
-    #             # Use a text widget for the last field, i.e. query_string.
-
-    #             entry = tk.Text(form_frame, height = 10, width = 100, wrap = "word", font = ("TkDefaultFont", 10))
-
-    #             entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "w")
-
-    #             # Add vertical scrollbar to Text widget.
-
-    #             scrollbar = ttk.Scrollbar(form_frame, orient = "vertical", command = entry.yview)
-
-    #             scrollbar.grid(row = i, column = 2, sticky = "ns", padx = 5, pady = 5)
-
-    #             # Link the Text widget with the scrollbar.
-
-    #             entry.configure(yscrollcommand = scrollbar.set)
-
-    #         else:
-
-    #             entry = ttk.Entry(form_frame, width = 100)
-
-    #             entry.grid(row = i, column = 1, padx = 5, pady = 5, sticky = "ew")
-
-    #         self.entries[table_name][col] = entry
-
-    #     # Add CRUD buttons.
-
-    #     button_frame = ttk.Frame(frame)
-
-    #     button_frame.pack(fill = "x", padx = 20, pady = 20)
-
-    #     add_btn = ttk.Button(button_frame, 
-    #                text = "Add Record", 
-    #                command = lambda t = table_name: self.add_record(t))
-        
-    #     add_btn.grid(row = 0, column = 0, padx = 10)
-
-    #     update_btn = ttk.Button(button_frame, 
-    #                text = "Update Record", 
-    #             command = lambda t = table_name: self.update_record(t))
-        
-    #     update_btn.grid(row = 0, column = 1, padx = 10)
-
-    #     delete_btn = ttk.Button(button_frame, 
-    #                text = "Delete Record", 
-    #                command = lambda t = table_name: self.delete_record(t))
-        
-    #     delete_btn.grid(row = 0, column = 2, padx = 10)
-
-    #     refresh_btn = ttk.Button(button_frame, 
-    #                text = "Refresh Records", 
-    #                command = lambda t = table_name: self.refresh_records(t))
-        
-    #     refresh_btn.grid(row = 0, column = 3, padx = 10)
-
-    #     # Add tooltips.
-
-    #     Tooltip(add_btn, widget_id = "add_btn")
-
-    #     Tooltip(update_btn, widget_id = "update_btn")
-
-    #     Tooltip(delete_btn, widget_id = "delete_btn")
-        
-    #     Tooltip(refresh_btn, widget_id = "refresh_btn")
-
-    #     # Add data display to see the data in tables.
-
-    #     tree_frame = ttk.Frame(frame)
-
-    #     tree_frame.pack(fill = "both", expand = True, padx = 20, pady = 20)
-
-    #     Tooltip(tree_frame, widget_id = "tree_frame")
-
-    #     scrollbar = ttk.Scrollbar(tree_frame, orient = "vertical")
-
-    #     self.trees[table_name] = ttk.Treeview(tree_frame, columns = columns, show = "headings", yscrollcommand = scrollbar.set)
-
-    #     scrollbar.config(command = self.trees[table_name].yview)
-
-    #     scrollbar.pack(side = "right", fill = "y")
-
-    #     for col in columns:
-    #         self.trees[table_name].heading(col, text = col)
-    #         self.trees[table_name].column(col, width = 120, anchor = "w")
-
-    #     self.trees[table_name].pack(fill = "both", expand = True)
-
-    #     self.trees[table_name].bind("<<TreeviewSelect>>", lambda event, t = table_name: self.select_record(t))
-
-    #     self.refresh_records(table_name) 
-
     def collect_form_data(self, table_name):
-        """Collect all current form inputs."""
+
+        """
+        Collects the current values from form input fields for the specified table.
+
+        This method iterates through the widgets (or direct values) defined in 
+        `self.entries[table_name]`, retrieves the current value for each field, 
+        and returns a dictionary suitable for use in insert or update operations.
+
+        Parameters:
+            table_name (str): The name of the table whose form data should be collected.
+
+        Returns:
+            dict: A dictionary mapping field names to their current values.
+
+        Behavior:
+            - If the table is not found in `self.entries`, a warning is printed and an 
+            empty dictionary is returned.
+            - For widgets (Tkinter objects), values are retrieved using `self.binder.get_widget_value()`.
+            - For non-widget values (e.g., previously resolved IDs), the value is used as-is.
+            - Supports flexible data definitions that may mix widgets and pre-bound values.
+
+        Notes:
+            - This method assumes that all widgets in `self.entries[table_name]` are either 
+            standard Tkinter widgets or already-resolved values.
+            - No type conversion or validation is performed here; consumers of the data are 
+            expected to handle that as needed.
+        """
+
         if table_name not in self.entries:
             print(f"Warning: Table '{table_name}' not found in entries.")
             return {}
@@ -1652,8 +1518,30 @@ class App:
     def add_record(self, table):
 
         """
-        Inserts a new record into the table. Allows empty fields (NULL values).
+        Inserts a new record into the specified table, allowing NULL values in empty fields.
 
+        This method gathers form data from entry widgets associated with the given table, 
+        optionally resolves linked identifiers (e.g., initiative ID), and inserts the data 
+        into the database. After insertion, it clears the form and refreshes the treeview 
+        to reflect the newly added record.
+
+        Parameters:
+            table (str): The name of the table into which the new record should be inserted.
+
+        Behavior:
+            - If the table is not found in `self.entries`, an error message is displayed and the 
+            operation is aborted.
+            - Uses `collect_form_data()` to gather values from the input widgets.
+            - For the 'metric' table, retrieves the `initiative_id` from a bound entry via 
+            `self.binder.get_id_entry_value()`. (This value is currently unused.)
+            - Attempts to insert the collected data using `db.insert()`.
+            - On success, clears the form and refreshes the record display.
+            - On failure, displays an error dialog with exception details.
+
+        Notes:
+            - Handles exceptions gracefully with user-facing error messages.
+            - Assumes input validation (if any) is handled upstream or within `collect_form_data()`.
+            - Allows insertion of records with empty fields (which are treated as NULL).
         """
 
         if table not in self.entries:
@@ -1664,13 +1552,13 @@ class App:
 
             data = self.collect_form_data(table)
 
-            # data = {col: self.binder.get_widget_value(self.entries[table][col]) or None for col in self.entries[table]}
-
             initiative_title = self.entries["metric"]["initiative_id"]
-            print(f"Selected initiative title: {initiative_title}")
+
+            # print(f"Selected initiative title: {initiative_title}")
 
             initiative_id = self.binder.get_id_entry_value("metr_init_id")
-            print(f"Resolved initiative_id: {initiative_id}")
+
+            # print(f"Resolved initiative_id: {initiative_id}")
 
             db.insert(table, data)
             self.clear_fields(table)
@@ -1679,6 +1567,27 @@ class App:
             msg_handler.show_error("Error", {e})
 
     def validate_and_add(self, table_name):
+
+        """
+        Validates a user-defined query string before adding a new record to the specified table.
+
+        This method retrieves the input from a Tkinter Text widget, validates it via the 
+        database layer, and—if the query is valid—proceeds to add the new record. If validation 
+        fails, an error message is displayed and the add operation is aborted.
+
+        Parameters:
+            table_name (str): The name of the table to which the new record will be added.
+
+        Behavior:
+            - Retrieves query text from `self.uq_query_string_entry`.
+            - Uses `db.validate_query()` to validate the syntax and structure of the query.
+            - Displays an error dialog if the query is invalid.
+            - Calls `self.add_record(table_name)` to insert the record if validation passes.
+
+        Notes:
+            - Assumes `db.validate_query()` will raise an exception if the query is invalid.
+            - Assumes `add_record()` handles field extraction, validation, and persistence.
+        """
 
         query_text = self.uq_query_string_entry.get("1.0", tk.END).strip()
 
@@ -1692,9 +1601,28 @@ class App:
 
     def update_record(self, table):
 
-        """ 
-        Updates the selected record in the table. Only updates fields that are changed.
+        """
+        Updates the selected record in the specified table with any modified field values.
 
+        This method compares the current form inputs against the selected record in the treeview 
+        and constructs an update only for fields that have non-empty values and are not primary keys. 
+        It supports single and composite primary keys (e.g., in the 'event_plan' table), builds a 
+        condition dictionary to identify the target record, and then performs the update through the 
+        database interface.
+
+        Parameters:
+            table (str): The name of the table in which the record is to be updated.
+
+        Behavior:
+            - If no record is selected, a warning is displayed and the operation is aborted.
+            - Only fields with non-empty values are included in the update payload.
+            - Primary key fields are excluded from updates.
+            - After updating, the form is cleared and the treeview is refreshed.
+
+        Notes:
+            - Assumes the first column (or first two for 'event_plan') form the primary key(s).
+            - Relies on `self.binder.get_widget_value()` to retrieve widget values.
+            - Relies on `db.update()` to persist changes to the database.
         """
 
         selected_item = self.trees[table].selection()
@@ -1735,6 +1663,27 @@ class App:
 
     def validate_and_update(self, table_name):
 
+        """
+        Validates a user-defined query string before updating a record in the specified table.
+
+        This method retrieves the query text from a text widget, attempts to validate it using 
+        the database layer, and—if validation passes—proceeds to update the record. If the query 
+        is invalid, an error message is displayed and the update is aborted.
+
+        Parameters:
+            table_name (str): The name of the table in which the record should be updated.
+
+        Behavior:
+            - Retrieves the query from a Tkinter Text widget (`self.uq_query_string_entry`).
+            - Uses `db.validate_query()` to ensure the query is syntactically valid.
+            - If validation fails, shows an error dialog with the exception message.
+            - If validation passes, invokes `self.update_record(table_name)`.
+
+        Notes:
+            - Assumes `db.validate_query()` raises an exception on invalid input.
+            - Assumes `update_record()` handles the actual persistence logic.
+        """
+
         query_text = self.uq_query_string_entry.get("1.0", tk.END).strip()
 
         try: 
@@ -1748,8 +1697,24 @@ class App:
     def delete_record(self, table):
 
         """
-        Deletes the selected record from the table.
-        
+        Deletes the selected record from the specified table and updates the UI.
+
+        This method retrieves the selected record from the treeview associated with the given table,
+        identifies the record using its primary key, prompts the user for confirmation, and deletes
+        it from the database. After deletion, it clears the input fields and refreshes the treeview
+        to reflect the change.
+
+        Parameters:
+            table (str): The name of the table from which the record should be deleted.
+
+        Behavior:
+            - If no record is selected, a warning message is shown and the operation is canceled.
+            - Assumes the first column returned by `db.get_columns(table)` is the primary key.
+            - Prompts the user for confirmation before performing the deletion.
+
+        Notes:
+            - The UI is updated by calling `clear_fields()` and `refresh_records()` after deletion.
+            - NULL-safe and assumes consistent record-key alignment between UI and database schema.
         """
 
         selected_item = self.trees[table].selection()
@@ -1776,9 +1741,19 @@ class App:
     def refresh_records(self, table):
 
         """
-        Fetches and displays all records in the given table.  Converts NULL values to 
-        empty strings for display.
-        
+        Refreshes the treeview display by fetching and loading all records from the specified table.
+
+        This method clears any existing rows in the treeview and repopulates it with fresh data 
+        retrieved from the database. It ensures that NULL values from the database are converted 
+        to empty strings for a cleaner display in the UI.
+
+        Parameters:
+            table (str): The name of the table whose records should be fetched and displayed.
+
+        Notes:
+            - Assumes `self.trees[table]` refers to the treeview widget associated with the table.
+            - Uses `db.fetch_all(table)` to retrieve data as dictionaries.
+            - Record values are inserted in the order returned by `record.values()`.
         """
 
         for row in self.trees[table].get_children():
@@ -1791,8 +1766,19 @@ class App:
     def select_record(self, table):
 
         """
-        Populates input fields with the selected record for editing.
-        
+        Populates input widgets with data from the selected record in the treeview.
+
+        When a user selects a row in the treeview associated with the given table, 
+        this method retrieves the record's values and populates the corresponding 
+        input fields to allow for editing. It assumes that the order of columns 
+        in the treeview matches the order of keys in the entries dictionary.
+
+        Parameters:
+            table (str): The name of the table whose treeview and input fields are being used.
+
+        Notes:
+            - If no item is selected, the method exits without making any changes.
+            - None values from the treeview are converted to empty strings before populating fields.
         """
 
         selected_item = self.trees[table].selection()
@@ -1812,7 +1798,15 @@ class App:
     def clear_fields(self, table):
 
         """
-        Clears input fields after an operation.
+        Clears all input widgets associated with a specific database table.
+
+        This method iterates over all input fields (e.g., Entry, Text, Combobox) 
+        registered for the given table and resets their values to an empty string. 
+        It is typically called after operations like add, update, or delete 
+        to reset the form state for the next input.
+
+        Parameters:
+            table (str): The name of the table whose input fields should be cleared.
 
         """
 
@@ -1917,126 +1911,6 @@ class App:
 
         except Exception as e:
                 msg_handler.show_error("Database Error", {e})
-        
-    # def get_widget_value(self, widget):
-    #     """
-    #     Retrieves the value from a Tkinter input widget, handling each widget type appropriately.
-
-    #     - For `tk.Entry` widgets (single-line input), returns the text content.
-    #     - For `tk.Text` widgets (multi-line input), retrieves the text from the start to the end, excluding the trailing newline.
-    #     - For `ttk.Combobox` widgets, retrieves the corresponding ID based on the selected title.
-
-    #     Parameters
-    #     ----------
-    #     widget : tk.Widget
-    #         The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) from which the value is retrieved.
-
-    #     Returns
-    #     -------
-    #     str or None
-    #         The cleaned text content from the widget, or the corresponding ID for a combobox.
-    #     """
-    #     if isinstance(widget, tk.Text):
-    #         return widget.get("1.0", "end-1c").strip()
-
-    #     elif isinstance(widget, ttk.Combobox):
-    #         selected_title = widget.get().strip()  # Get the selected title from the combobox
-    #         combo_maps = self.combo_value_maps.get(widget)
-    #         if combo_maps:
-    #             title_to_id = combo_maps.get("title_to_id")
-    #             if title_to_id:
-    #                 # Return the corresponding ID for the selected title
-    #                 return title_to_id.get(selected_title, None)
-    #         return selected_title  # Return title if no mapping exists
-
-    #     elif isinstance(widget, ttk.Checkbutton):
-    #         var_name = widget.cget("variable")
-    #         if var_name:
-    #             return bool(self.root.getvar(var_name))
-
-    #     elif hasattr(widget, "get"):
-    #         return widget.get().strip()
-
-    #     return None
-
-    # def set_widget_value(self, widget, value):
-    #     """
-    #     Sets the given value into a Tkinter input widget, handling each widget type appropriately.
-
-    #     - For `tk.Entry` widgets (single-line input), sets the provided value as the widget's text.
-    #     - For `tk.Text` widgets (multi-line input), clears the existing text and inserts the new value.
-    #     - For `ttk.Combobox` widgets, sets the display value based on a mapping from ID to title.
-
-    #     Parameters
-    #     ----------
-    #     widget : tk.Widget
-    #         The Tkinter input widget (either `tk.Entry`, `tk.Text`, or `ttk.Combobox`) to which the value will be set.
-
-    #     value : str or int
-    #         The value to be inserted into the widget. For `ttk.Combobox`, this is the ID (which will be mapped to the title).
-
-    #     Returns
-    #     -------
-    #     None
-    #     """
-    #     if isinstance(widget, (tk.Entry, ttk.Entry)):
-    #         self._set_entry_value(widget, value)
-    #     elif isinstance(widget, ttk.Combobox):
-    #         self._set_combobox_value(widget, value)
-    #     elif isinstance(widget, ttk.Checkbutton):
-    #         self._set_checkbutton_value(widget, value)
-    #     elif isinstance(widget, tk.Text):
-    #         self._set_text_value(widget, value)
-    #     elif hasattr(widget, "delete") and hasattr(widget, "insert"):
-    #         self._set_generic_value(widget, value)
-    #     else:
-    #         print(f"Unsupported widget type: {type(widget)}")
-
-
-    def _set_entry_value(self, widget, value):
-        """Set value for Entry widgets."""
-        widget.delete(0, tk.END)
-        widget.insert(0, value)
-
-
-    def _set_combobox_value(self, widget, value):
-        """Set value for Combobox widgets."""
-        combo_maps = self.combo_value_maps.get(widget)
-        if combo_maps:
-            id_to_title = combo_maps.get("id_to_title")
-            if id_to_title:
-                # Convert ID to the corresponding title and set it in the combobox
-                display_value = id_to_title.get(value, "")
-                widget.set(display_value)
-            else:
-                # If no mapping exists, just set the value directly (fallback)
-                widget.set(value)
-        else:
-            # If no mapping, directly set the value (fallback)
-            widget.set(value)
-
-
-    def _set_checkbutton_value(self, widget, value):
-        """Set value for Checkbutton widgets."""
-        var_name = widget.cget("variable")
-        if var_name:
-            try:
-                self.root.setvar(var_name, bool(value))
-            except Exception as e:
-                print(f"Error setting checkbutton variable: {e}")
-
-
-    def _set_text_value(self, widget, value):
-        """Set value for Text widgets."""
-        widget.delete("1.0", tk.END)
-        widget.insert(tk.END, value)
-
-
-    def _set_generic_value(self, widget, value):
-        """Set value for generic widgets with delete and insert methods."""
-        widget.delete(0, tk.END)
-        widget.insert(0, value)
-
 
     def get_treeview_data(self):
 
@@ -2120,109 +1994,9 @@ class App:
             tab_index = self.notebook.index(frame)
             self.notebook.select(tab_index)
 
-    # def register_combobox(self, widget, id_to_title_map):
-    #     """
-    #     Register a combobox with ID-to-title and title-to-ID mappings.
-
-    #     Parameters
-    #     ----------
-    #     widget : ttk.Combobox
-    #         The combobox widget to register.
-
-    #     id_to_title_map : dict
-    #         Dictionary mapping from ID to title.
-    #     """
-    #     title_to_id = {v: k for k, v in id_to_title_map.items()}
-
-    #     # Save both directions for later use
-    #     self.combo_value_maps[widget] = {
-    #         "id_to_title": id_to_title_map,
-    #         "title_to_id": title_to_id
-    #     }
-
-    #     # Update the combobox values
-    #     widget['values'] = list(title_to_id.keys())
-
-
-    # def update_combobox_from_treeview(self, widget, selected_id):
-    #     """
-    #     Update the combobox based on a selected ID
-    #     """
-    #     combo_maps = self.combo_value_maps.get(widget)
-    #     if combo_maps:
-    #         id_to_title = combo_maps.get("id_to_title")
-    #         if id_to_title:
-    #             # Set the combobox to display the corresponding title
-    #             title = id_to_title.get(selected_id, "")
-    #             widget.set(title)
-
-    # def setup_widgets(self):
-    #     """
-    #     Set up widgets for different tables.
-    #     Example: for 'metric' and 'initiative' tables, each may have multiple comboboxes.
-    #     """
-    #     # For example, set up comboboxes for the 'metric' and 'initiative' tables
-    #     self.setup_combobox_for_table("metric", ["metric_column_1", "metric_column_2"])
-    #     self.setup_combobox_for_table("initiative", ["initiative_column_1", "initiative_column_2"])
-
-    # def setup_combobox_for_table(self, table_name, columns):
-    #     """
-    #     Set up multiple comboboxes for a specific table, bind them to hidden entries, and add widgets to the layout.
-    #     Each combobox corresponds to a specific column.
-    #     """
-    #     for column in columns:
-    #         # Fetch rows for each column (e.g., 'metric_column_1', 'metric_column_2')
-    #         rows = db.execute_query(f"SELECT {table_name}_id, {column} FROM {table_name}")
-
-    #         # Create combobox and hidden entry widget
-    #         combobox = ttk.Combobox(self.root, values=[row[1] for row in rows])  # Titles for the combobox
-    #         entry = tk.Entry(self.root)  # Hidden entry widget to store the selected ID
-
-    #         # Store widgets in dictionaries for future reference
-    #         combobox_key = f"{table_name}_{column}_combobox"
-    #         entry_key = f"{table_name}_{column}_entry"
-    #         self.comboboxes[combobox_key] = combobox
-    #         self.entries[entry_key] = entry
-
-    #         # Bind the combobox to the hidden entry (use helper function)
-    #         # bind_combobox_to_entry(combobox, entry, rows, id_key=f"{table_name}_id", title_key=column)
-
-    #         # Add the combobox and entry widgets to the UI layout
-    #         combobox.grid(row=columns.index(column), column=0)
-    #         entry.grid(row=columns.index(column), column=1)
-
-    # def bind_comboboxes_for_table(self, table, combo_entry_map):
-    #     """
-    #     Bind comboboxes and entry widgets for each table dynamically.
-        
-    #     - `table`: The name of the table (e.g., 'initiative').
-    #     - `combo_entry_map`: A dictionary mapping comboboxes to entry widgets for each field in the table.
-    #     """
-    #     try:
-    #         # Fetch rows from the database based on the table
-    #         query = f"SELECT * FROM {table}"
-    #         rows = db.execute_query(query)
-            
-    #         for combo, entry in combo_entry_map.items():
-    #             # Assuming each combobox and entry pair corresponds to one field in the table
-    #             # For example, initiative_id and initiative_title in the 'initiative' table
-                
-    #             # Here, `combo` is the combobox and `entry` is the hidden entry widget
-    #             if combo and entry:
-    #                 # Bind the combobox to the entry widget with the correct title-to-id mapping
-    #                 id_key = f"{table}_id"  # Assume the ID field in the table is the table name followed by '_id'
-    #                 title_key = f"{table}_title"  # Assume the title field follows a similar convention
-                    
-    #                 self.combo_binder.bind(combo, entry, rows, id_key=id_key, title_key=title_key)
-    #     except Exception as e:
-    #         messagebox.showerror("Error", f"Error binding comboboxes for {table}: {e}")
-
-
-
 if __name__ == "__main__":
-    # root = tb.Window(themename = "value")
+
     root = tk.Tk()
     app = App(root)
     root.minsize(800, 600)
     root.mainloop()
-
