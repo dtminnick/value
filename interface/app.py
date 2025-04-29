@@ -3,7 +3,6 @@ from downloader import Downloader
 from messenger import Messenger
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext, ttk
-from tooltip import Tooltip
 from database import Database
 from tkcalendar import DateEntry
 from widget_binder import WidgetBinder
