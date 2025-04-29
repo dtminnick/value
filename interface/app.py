@@ -733,9 +733,15 @@ class App:
                                   text = "Plan Id:"
                                   ).grid(row = 0, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        ep_plan_id_entry = ttk.Entry(ep_entry_frame, width = 20)
+        # ep_plan_id_entry = ttk.Entry(ep_entry_frame, width = 20)
 
-        ep_plan_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.ep_plan_id_entry = self.binder.add_combobox("ep_plan_id", 
+                                                          self.plan_dict, 
+                                                          0, 
+                                                          1, 
+                                                          parent = ep_entry_frame)
+
+        # ep_plan_id_entry.grid(row = 0, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Event id.
 
@@ -744,9 +750,15 @@ class App:
                                   text = "Event Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        ep_event_id_entry = ttk.Entry(ep_entry_frame)
+        # ep_event_id_entry = ttk.Entry(ep_entry_frame)
 
-        ep_event_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.ep_event_id_entry = self.binder.add_combobox("ep_event_id", 
+                                                          self.evnt_dict, 
+                                                          1, 
+                                                          1, 
+                                                          parent = ep_entry_frame)
+
+        # ep_event_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Create button frame and widgets.
 
@@ -820,8 +832,8 @@ class App:
         # Create event plan entries.
 
         self.entries["event_plan"] = {
-            "event_id": ep_event_id_entry,
-            "plan_id": ep_plan_id_entry
+            "event_id": self.ep_event_id_entry,
+            "plan_id": self.ep_plan_id_entry
         }
 
         self.refresh_records("event_plan") 
@@ -856,9 +868,15 @@ class App:
                                   text = "Metric Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        gmv_metric_id_entry = ttk.Entry(gmv_entry_frame, width = 20)
+        # gmv_metric_id_entry = ttk.Entry(gmv_entry_frame, width = 20)
 
-        gmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.gmv_metric_id_entry = self.binder.add_combobox("gmv_metric_id", 
+                                                          self.metr_dict, 
+                                                          1, 
+                                                          1, 
+                                                          parent = gmv_entry_frame)
+
+        # gmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Metric date.
 
@@ -954,7 +972,7 @@ class App:
 
         self.entries["global_metric_value"] = {
             "global_value_id": gmv_global_value_id_entry,
-            "metric_id": gmv_metric_id_entry,
+            "metric_id": self.gmv_metric_id_entry,
             "metric_date": gmv_metric_date_entry,
             "actual_value": gmv_actual_value_entry
         }
@@ -991,9 +1009,15 @@ class App:
                                   text = "Metric Id:"
                                   ).grid(row = 1, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        pmv_metric_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
+        # pmv_metric_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
 
-        pmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.pmv_metric_id_entry = self.binder.add_combobox("pmv_metric_id", 
+                                                          self.metr_dict, 
+                                                          1, 
+                                                          1, 
+                                                          parent = pmv_entry_frame)
+
+        # pmv_metric_id_entry.grid(row = 1, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Plan id.
 
@@ -1002,9 +1026,15 @@ class App:
                                   text = "Plan Id:"
                                   ).grid(row = 2, column = 0, padx = 5, pady = 2, sticky = "w")
         
-        pmv_plan_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
+        # pmv_plan_id_entry = ttk.Entry(pmv_entry_frame, width = 20)
 
-        pmv_plan_id_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
+        self.pmv_plan_id_entry = self.binder.add_combobox("pmv_plan_id", 
+                                                          self.plan_dict, 
+                                                          2, 
+                                                          1, 
+                                                          parent = pmv_entry_frame)
+
+        # pmv_plan_id_entry.grid(row = 2, column = 1, padx = 5, pady = 2, sticky = "w")
 
         # Metric date.
 
@@ -1101,8 +1131,8 @@ class App:
 
         self.entries["plan_metric_value"] = {
             "plan_value_id": pmv_global_value_id_entry,
-            "metric_id": pmv_metric_id_entry,
-            "plan_id": pmv_plan_id_entry,
+            "metric_id": self.pmv_metric_id_entry,
+            "plan_id": self.pmv_plan_id_entry,
             "metric_date": pmv_metric_date_entry,
             "actual_value": pmv_actual_value_entry
         }
@@ -1777,7 +1807,7 @@ class App:
         for i, col in enumerate(columns):
             widget = self.entries[table][col]
             value = values[i] if values[i] is not None else ""
-            self.binder.set_value(widget, value)
+            self.binder.set_widget_value(widget, value)
 
     def clear_fields(self, table):
 
