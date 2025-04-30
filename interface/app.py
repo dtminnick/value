@@ -302,10 +302,11 @@ class App:
 
         metr_is_plan_level_label = ttk.Label(metr_entry_frame,
                                     width = 20,
-                                    text = "Is Plan  Level:"
+                                    text = "Is Plan Level:"
                                     ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
 
-        metr_is_plan_level_check = ttk.Checkbutton(metr_entry_frame, variable=metr_is_plan_level_var)
+        metr_is_plan_level_check = ttk.Checkbutton(metr_entry_frame, 
+                                                   variable=metr_is_plan_level_var)
         
         metr_is_plan_level_check.grid(row = 4, column = 1, padx = 5, pady = 2, sticky = "w")
 
@@ -1171,7 +1172,7 @@ class App:
         uq_query_string_label = ttk.Label(uq_left_frame,
                                   width = 20,
                                   text = "Query String:"
-                                  ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "w")
+                                  ).grid(row = 4, column = 0, padx = 5, pady = 2, sticky = "n")
         
         style = ttk.Style()
 
@@ -1336,16 +1337,16 @@ class App:
             "query_id",
             "query_title",
             "query_description",
-            "query_purpose",
-            "query_string",
-            "set_operation",
-            "set_membership",
-            "set_comparison",
-            "subquery",
-            "cte",
-            "aggregate_function",
-            "window_function",
-            "olap"
+            "query_purpose"
+            # "query_string",
+            # "set_operation",
+            # "set_membership",
+            # "set_comparison",
+            # "subquery",
+            # "cte",
+            # "aggregate_function",
+            # "window_function",
+            # "olap"
         )
 
         uq_tree_frame = ttk.Frame(uq_frame)
