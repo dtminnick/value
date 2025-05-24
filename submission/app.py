@@ -49,7 +49,7 @@ class App:
 
         self.root = root
 
-        self.binder = WidgetBinder(root, is_testing = True)
+        self.binder = WidgetBinder(root, is_testing = False)
 
         self.root.title("Value Measurement Database Application")
 

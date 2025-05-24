@@ -27,6 +27,12 @@ operations across multiple tables.
 - **Secure DB Connectivity:** Uses mysql.connector with a config.ini for credential management.
 - **Built-in Error Handling:** Exceptions are caught and displayed directly in the GUI.
 - **Custom Query Execution:** Users can store, run, and download results of complex SQL queries.
+- **Preloaded Queries:** Set of preloaded queries to perform complex query operations.  See **User Queries** and **Preloaded Queries** sections below for details.
+
+## Application Demo
+
+I recorded a demo on Loom of the latest feature enhancements to the application.  You 
+can use this link to get to the video: [Enhancements Demo Video](https://www.loom.com/share/ef3f3d981ba540a5805fa0251e0883a5?sid=e695830d-adc9-43e8-b64b-a9819933fb9f).
 
 ## Installation
 
@@ -142,6 +148,54 @@ The Database class connects to MySQL using credentials from `config.ini`.
 - All database interactions are enclosed in try-except blocks.
 - Errors are raised and displayed using `messenger.py`.
 - Enhances traceability and ensures GUI responsiveness during failures.
+
+## User Queries
+
+The `user_query` table enables use of the application to store custom queries to which 
+users may want access for generating specific datasets from the value measurement database.
+This table not only stores the query strings, but also enables users to document the queries 
+with a title, description and purpose statement.  In addition, users can identify the following 
+types of operations used in a given query, including set operation, set membership, set comparison,
+subquery, common table expression (CTE), aggregate function, window function and OLAP.
+
+Note that the `Database` class implements a `validate_query` method that prevents
+users from saving queries that can potentially damange the database structure or cause data loss.
+Essentially, users are limited to SELECT queries.
+
+## Preloaded Queries
+
+The user_query table is preloaded with the following queries.  Separate `preloaded_queries.sql` file 
+contains MySQL-compliant scripts for each of these queries.
+
+| Title                                                                | Set Operation | Set Membership | Set Comparison | Subquery | CTE | Aggregate Function | Window Function  | OLAP |
+|----------------------------------------------------------------------|---------------|----------------|----------------|----------|-----|--------------------|------------------|------|
+| Detecting Anomalous Metric Spikes (Z-Score Calculation)              |               |                |                |          | X   | X                  | X                | X    |
+| Identifying Fastest Growing Metrics Over a Rolling Period            |               |                |                |          | X   |                    | X                | X    |
+| Rank Metrics by Consistency (Lowest Variation)                       |               |                |                |          |     | X                  | X                | X    |
+| Rank Metrics by Volatility (Highest Variability)                     |               |                |                |          |     | X                  | X                | X    |
+| Event Row Number Assignments by Event Date                           |               |                |                |          |     |                    | X                | X    |
+| First and Last Recorded Value for Each Metric                        |               |                |                |          | X   |                    | X                | X    |
+| Rank Metrics by Most Frequently Tracked                              |               |                |                |          |     | X                  | X                | X    |
+| Identify Top 3 Events That Impact the Most Metrics                   |               |                |                |          |     | X                  | X                | X    |
+| Metric with the Most Plan Associations                               |               |                |                |          |     | X                  | X                | X    |
+| Identify Metrics with Longest Periods of Inactivity                  |               |                |                |          | X   | X                  | X                | X    |
+| Rolling 90-day Average for Each Metric                               |               |                |                |          |     | X                  | X                | X    |
+| Assign Plan Groups to Quartiles                                      |               |                |                |          |     |                    | X                | X    |
+| Cumulative Distribution of Metric Values                             |               |                |                |          |     |                    | X                | X    |
+| Percent Change Over Rolling 4-Week Window                            |               |                |                |          | X   |                    | X                | X    |
+| Running Total of Metrics Per Initiative                              |               |                |                |          |     | X                  | X                | X    |
+| Rollup of Events by Initiative                                       |               |                |                |          |     | X                  |                  |      |
+| Aggregating Plan Metrics by Cube                                     |               |                |                |          |     | X                  |                  |      |
+| Average Metric Value Per Initiative                                  |               |                |                | X        |     | X                  |                  |      |
+| Combined Event and Plan Count Per Initiative Using Union             | X             |                |                |          |     |                    |                  |      |
+| Common Initiatives with Events and Plans Using Intersect             | X             |                |                |          |     |                    |                  |      |
+| Initiatives with Events but No Plans Using EXCEPT                    | X             |                |                |          |     |                    |                  |      |
+| Filter Events for Specific Initiatives Using IN                      |               | X              |                |          |     |                    |                  |      |
+| Filter Events for Initiatives Not in a Specified Set Using NOT IN    |               | X              |                |          |     |                    |                  |      |
+| Filter Events Where Actual Value Exceeds All Values from a Subquery  |               |                | X              |          |     |                    |                  |      |
+| Filter Events Where Actual Value Exceeds Any Value from a Subquery   |               |                | X              |          |     |                    |                  |      |
+| Filter Events Where Actual Value Exceeds Some Value from a Subquery  |               |                | X              |          |     |                    |                  |      |
+
 
 ## Security Considerations
 
